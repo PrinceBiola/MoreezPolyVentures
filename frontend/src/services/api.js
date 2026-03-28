@@ -8,9 +8,17 @@ const api = axios.create({
 
 // Request Interceptor for Auth
 api.interceptors.request.use((config) => {
-  const user = JSON.parse(localStorage.getItem('moreez_polyventure_user'));
-  if (user && user.token) {
-    config.headers.Authorization = `Bearer ${user.token}`;
+  try {
+    const rawUser = localStorage.getItem('moreez_polyventure_user');
+    if (!rawUser) return config;
+
+    const user = JSON.parse(rawUser);
+    if (user && user.token) {
+      config.headers.Authorization = `Bearer ${user.token}`;
+      // console.log(`🚀 Attaching token for ${config.url}`);
+    }
+  } catch (error) {
+    console.error('❌ Error reading auth token from localStorage', error);
   }
   return config;
 });
