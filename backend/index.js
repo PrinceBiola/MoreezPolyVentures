@@ -53,3 +53,5 @@ app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   initCronJobs();
 });
+
+export default app;
