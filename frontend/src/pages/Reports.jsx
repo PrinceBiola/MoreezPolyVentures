@@ -123,21 +123,25 @@ const Reports = () => {
       }
 
       const results = await Promise.all(promises);
-      const [bizRes, transportRes, expRes, salesRes] = results;
+      const bizRes = results[0];
+      const transportRes = results[1];
+      const expRes = results[2];
+      const salesRes = results[3];
+      const purchasesRes = results[4];
 
       setData({
-        business: bizRes.data,
-        transport: transportRes.data,
-        expenses: expRes.data,
-        sales: salesRes.data,
-        purchases: results[3].data
+        business: bizRes?.data || [],
+        transport: transportRes?.data || [],
+        expenses: expRes?.data || [],
+        sales: salesRes?.data || [],
+        purchases: purchasesRes?.data || []
       });
 
       if (prevParams.startDate) {
         setPrevData({
-          transport: results[4].data,
-          expenses: results[5].data,
-          sales: results[6].data
+          transport: results[5]?.data || [],
+          expenses: results[6]?.data || [],
+          sales: results[7]?.data || []
         });
       } else {
         setPrevData({ transport: [], expenses: [], sales: [] });
@@ -152,14 +156,14 @@ const Reports = () => {
   const COLORS = ['#10b981', '#f59e0b', '#0f172a', '#94a3b8', '#6366f1', '#ec4899'];
 
   // Calculations
-  const salesRevenue = data.sales.reduce((acc, curr) => acc + (Number(curr.totalAmount) || 0), 0);
-  const transportRevenue = data.transport.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0);
+  const salesRevenue = (data.sales || []).reduce((acc, curr) => acc + (Number(curr.totalAmount) || 0), 0);
+  const transportRevenue = (data.transport || []).reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0);
   const totalRevenue = salesRevenue + transportRevenue;
 
   // Business Profit (Sales - COGS)
-  const businessCOGS = data.sales.reduce((acc, sale) => {
-    const saleCOGS = sale.items.reduce((itemAcc, item) => {
-      const product = data.business.find(p => p._id === (item.productId?._id || item.productId));
+  const businessCOGS = (data.sales || []).reduce((acc, sale) => {
+    const saleCOGS = (sale.items || []).reduce((itemAcc, item) => {
+      const product = (data.business || []).find(p => p._id === (item.productId?._id || item.productId));
       const cost = product?.costPrice || 0;
       return itemAcc + (Number(item.quantitySold) * cost);
     }, 0);
@@ -168,7 +172,7 @@ const Reports = () => {
   const businessProfit = salesRevenue - businessCOGS;
 
   // Transport Profit (Payments - Expenses)
-  const transportExpensesTotal = data.expenses.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0);
+  const transportExpensesTotal = (data.expenses || []).reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0);
   const transportProfit = transportRevenue - transportExpensesTotal;
 
   // Final Metrics
@@ -176,20 +180,20 @@ const Reports = () => {
   const netProfit = businessProfit + transportProfit;
 
   // Previous Period Calculations
-  const prevSalesRevenue = prevData.sales.reduce((acc, curr) => acc + (Number(curr.totalAmount) || 0), 0);
-  const prevTransportRevenue = prevData.transport.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0);
+  const prevSalesRevenue = (prevData.sales || []).reduce((acc, curr) => acc + (Number(curr.totalAmount) || 0), 0);
+  const prevTransportRevenue = (prevData.transport || []).reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0);
   const prevTotalRevenue = prevSalesRevenue + prevTransportRevenue;
 
-  const prevBusinessCOGS = prevData.sales.reduce((acc, sale) => {
-    const saleCOGS = sale.items.reduce((itemAcc, item) => {
-      const product = data.business.find(p => p._id === (item.productId?._id || item.productId));
+  const prevBusinessCOGS = (prevData.sales || []).reduce((acc, sale) => {
+    const saleCOGS = (sale.items || []).reduce((itemAcc, item) => {
+      const product = (data.business || []).find(p => p._id === (item.productId?._id || item.productId));
       const cost = product?.costPrice || 0;
       return itemAcc + (Number(item.quantitySold) * cost);
     }, 0);
     return acc + saleCOGS;
   }, 0);
   const prevBusinessProfit = prevSalesRevenue - prevBusinessCOGS;
-  const prevTransportExpensesTotal = prevData.expenses.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0);
+  const prevTransportExpensesTotal = (prevData.expenses || []).reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0);
   const prevTransportProfit = prevTransportRevenue - prevTransportExpensesTotal;
   const prevNetProfit = prevBusinessProfit + prevTransportProfit;
 
@@ -211,7 +215,7 @@ const Reports = () => {
   ];
 
   // Expense Breakdown (Transport categories)
-  const expenseCategories = data.expenses.reduce((acc, curr) => {
+  const expenseCategories = (data.expenses || []).reduce((acc, curr) => {
     acc[curr.category] = (acc[curr.category] || 0) + (Number(curr.amount) || 0);
     return acc;
   }, {});
@@ -305,7 +309,7 @@ const Reports = () => {
   if (loading) return <div className="h-screen flex items-center justify-center"><Loader size="xl" /></div>;
 
   // Summary Totals
-  const businessTotalUnits = data.business.reduce((acc, curr) => acc + (Number(curr.currentStock) || 0), 0);
+  const businessTotalUnits = (data.business || []).reduce((acc, curr) => acc + (Number(curr.currentStock) || 0), 0);
   const businessTotalRevenue = salesRevenue;
   const transportTotalIncome = transportRevenue;
 
@@ -381,14 +385,14 @@ const Reports = () => {
         <StatCard label="TOTAL REVENUE" value={`₦${totalRevenue.toLocaleString()}`} trend={period === 'This Month' ? revenueTrend : null} color={totalRevenue >= prevTotalRevenue ? 'emerald' : 'rose'} />
         <StatCard label="TOTAL EXPENSES" value={`₦${totalExpenses.toLocaleString()}`} trend={period === 'This Month' ? expenseTrend : null} color={totalExpenses <= prevTransportExpensesTotal ? 'emerald' : 'rose'} />
         <StatCard label="NET PROFIT" value={`₦${netProfit.toLocaleString()}`} trend={period === 'This Month' ? profitTrend : null} color={netProfit >= prevNetProfit ? 'emerald' : 'rose'} highlight />
-        <StatCard label="INVENTORY VALUE" value={`₦${data.business.reduce((acc, curr) => acc + (Number(curr.currentStock) * (curr.costPrice || 0)), 0).toLocaleString()}`} color="amber" icon={<Wallet className="w-4 h-4" />} />
+        <StatCard label="INVENTORY VALUE" value={`₦${(data.business || []).reduce((acc, curr) => acc + (Number(curr.currentStock) * (curr.costPrice || 0)), 0).toLocaleString()}`} color="amber" icon={<Wallet className="w-4 h-4" />} />
       </div>
 
       {/* Visualizations */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 bg-white border border-slate-200 rounded-md p-8 shadow-sm">
            <h3 className="text-sm font-black text-slate-900 tracking-tighter uppercase mb-8">Revenue Performance</h3>
-           <div className="h-[300px]">
+           <div className="h-[300px] min-h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                  <AreaChart data={chartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
                     <defs>
@@ -444,7 +448,7 @@ const Reports = () => {
                  </p>
               </div>
            </div>
-           <div className="flex flex-wrap justify-center gap-4 mt-4">
+           <div className="flex flex-wrap justify-center gap-4 mt-4 h-[60px] overflow-y-auto no-scrollbar">
               {pieData.map((p, i) => (
                  <div key={i} className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest">
                     <div className="w-2 h-2 rounded-full" style={{ background: COLORS[i] }}></div>

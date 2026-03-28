@@ -116,7 +116,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className="h-[300px] w-full">
+        <div className="h-[300px] min-h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={cashFlow} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
@@ -215,10 +215,10 @@ const Dashboard = () => {
         <div className="relative z-10 text-left">
           <h4 className="text-white font-black uppercase tracking-tighter text-lg mb-2">Transport Status</h4>
           <p className="text-slate-400 text-sm font-medium max-w-lg leading-relaxed">
-            {fleet.total > 0 ? (
+            {(fleet?.total || 0) > 0 ? (
               <>
-                <span className="text-emerald-500 font-black">{Math.round((fleet.active / fleet.total) * 100)}%</span> of your fleet is currently operational. 
-                {fleet.repairing > 0 ? ` ${fleet.repairing} vehicles are currently in maintenance.` : ' All vehicles are active or in transit.'} 
+                <span className="text-emerald-500 font-black">{Math.round(((fleet?.active || 0) / (fleet?.total || 1)) * 100)}%</span> of your fleet is currently operational. 
+                {(fleet?.repairing || 0) > 0 ? ` ${(fleet?.repairing || 0)} vehicles are currently in maintenance.` : ' All vehicles are active or in transit.'} 
                 No delays reported in major routes.
               </>
             ) : (
