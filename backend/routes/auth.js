@@ -2,6 +2,7 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import protect from '../middleware/auth.js';
+import { notificationService } from '../services/notificationService.js';
 
 const router = express.Router();
 
