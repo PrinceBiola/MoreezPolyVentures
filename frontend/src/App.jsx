@@ -21,6 +21,7 @@ const Payments = lazy(() => import('./pages/Payments'));
 const Notifications = lazy(() => import('./pages/Notifications'));
 const Reports = lazy(() => import('./pages/Reports'));
 const Settings = lazy(() => import('./pages/Settings'));
+const Debts = lazy(() => import('./pages/Debts'));
 
 function App() {
   const { user, loading } = useAuth();
@@ -70,6 +71,7 @@ function App() {
               <Route path="/purchases" element={<Purchases />} />
               <Route path="/sales" element={<Sales />} />
               <Route path="/expenses" element={<Expenses />} />
+              <Route path="/balances" element={<Debts />} />
               <Route path="/transport" element={<Transport />} />
               <Route path="/transport/:id" element={<CarDetail />} />
               <Route path="/payments" element={<Payments />} />

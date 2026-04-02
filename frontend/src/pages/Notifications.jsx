@@ -74,10 +74,10 @@ const Notifications = () => {
 
   const getStatusColor = (type) => {
     switch (type) {
-      case 'error': return 'text-rose-600 bg-rose-50 border-rose-100';
-      case 'success': return 'text-emerald-600 bg-emerald-50 border-emerald-100';
-      case 'warning': return 'text-amber-600 bg-amber-50 border-amber-100';
-      default: return 'text-slate-500 bg-slate-50 border-slate-100';
+      case 'error': return 'text-secondary bg-secondary/10 border-secondary/20';
+      case 'success': return 'text-primary bg-primary/10 border-primary/20';
+      case 'warning': return 'text-secondary bg-secondary/10 border-secondary/20';
+      default: return 'text-text-muted bg-neutral border-border-light';
     }
   };
 
@@ -94,61 +94,62 @@ const Notifications = () => {
   return (
     <div className="space-y-6 animate-fade-in text-left pb-10 italic">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-2">
-        <div>
-          <h2 className="text-3xl font-black text-slate-900 tracking-tighter uppercase leading-none">Notifications</h2>
-          <p className="text-slate-400 font-bold text-[11px] tracking-tight uppercase mt-2">Manage system alerts and operational history.</p>
+        <div className="text-left">
+          <h2 className="text-3xl font-black text-text-main tracking-tighter uppercase leading-none">Notifications</h2>
+          <p className="text-text-muted font-bold text-[11px] tracking-tight uppercase mt-2">Manage system alerts and operational history.</p>
         </div>
         <div className="flex gap-3">
           <Button variant="neutral" icon={CheckCircle2} onClick={markAllRead}>Mark All Read</Button>
         </div>
       </div>
 
-      <div className="flex gap-4 border-b border-slate-200">
+      <div className="flex gap-4 border-b border-border-light text-left">
         {['all', 'unread'].map(f => (
           <button
             key={f}
             onClick={() => setFilter(f)}
             className={`pb-3 text-[11px] font-black uppercase tracking-[0.2em] transition-all relative ${
-              filter === f ? 'text-emerald-600' : 'text-slate-400 hover:text-slate-600'
+              filter === f ? 'text-primary' : 'text-text-muted hover:text-text-main'
             }`}
           >
             {f === 'all' ? 'All Alerts' : 'Unread Only'}
             {filter === f && (
-              <div className="absolute bottom-0 left-0 w-full h-0.5 bg-emerald-600 rounded-full"></div>
+              <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary rounded-full"></div>
             )}
           </button>
         ))}
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-md shadow-sm overflow-hidden flex flex-col min-h-[400px]">
+      <div className="bg-white border border-border-light rounded-md shadow-sm overflow-hidden flex flex-col min-h-[400px] text-left">
         {loading ? (
-          <div className="flex-1 flex items-center justify-center font-black text-slate-400 italic"><Loader size="lg" /></div>
+          <div className="flex-1 flex items-center justify-center font-black text-text-muted italic"><Loader size="lg" /></div>
         ) : filteredNotifs.length > 0 ? (
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-border-light">
             {filteredNotifs.map(n => (
-              <div key={n._id} className={`p-8 hover:bg-slate-50/50 transition-all flex gap-6 group items-start ${!n.isRead ? 'bg-emerald-50/5' : ''}`}>
+              <div key={n._id} className={`p-8 hover:bg-neutral/50 transition-all flex gap-6 group items-start ${!n.isRead ? 'bg-primary/5' : ''}`}>
                 <div className={`w-12 h-12 rounded-md flex items-center justify-center border shrink-0 ${getStatusColor(n.type)}`}>
                    {getIcon(n.category)}
                 </div>
-                <div className="flex-1 min-w-0">
+                <div className="flex-1 min-w-0 text-left">
                    <div className="flex items-center gap-3 mb-1.5">
-                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{n.category}</span>
-                      <span className="text-slate-200 opacity-50">•</span>
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5 opacity-60">
+                      <span className="text-[10px] font-black text-text-muted uppercase tracking-widest">{n.category}</span>
+                      <span className="text-neutral opacity-50">•</span>
+                      <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest flex items-center gap-1.5 opacity-60">
                          <Clock className="w-3 h-3" /> {new Date(n.createdAt).toLocaleString()}
                       </span>
-                      {!n.isRead && <span className="w-2 h-2 bg-emerald-500 rounded-full shadow-sm shadow-emerald-500/50"></span>}
+                      {!n.isRead && <span className="w-2 h-2 bg-primary rounded-full shadow-sm shadow-primary/50"></span>}
                    </div>
-                   <h4 className="text-[15px] font-black text-slate-900 tracking-tight uppercase mb-1">{n.title}</h4>
-                   <p className="text-[13px] text-slate-500 font-bold leading-relaxed">{n.message}</p>
+                   <h4 className="text-[15px] font-black text-text-main tracking-tight uppercase mb-1">{n.title}</h4>
+                   <p className="text-[13px] text-text-muted font-bold leading-relaxed">{n.message}</p>
                 </div>
-                <div className="flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-center justify-end gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
                    {!n.isRead && (
-                     <button onClick={() => markAsRead(n._id)} className="flex items-center gap-1.5 text-[10px] font-black text-emerald-600 uppercase tracking-widest hover:translate-x-1 transition-transform">
+                     <button onClick={() => markAsRead(n._id)} className="flex items-center gap-1.5 text-[10px] font-black text-primary uppercase tracking-widest hover:translate-x-1 transition-transform">
                         Acknowledge <CheckCircle2 className="w-3.5 h-3.5" />
                      </button>
                    )}
-                   <button onClick={() => deleteNotification(n._id)} className="p-2 text-slate-300 hover:text-rose-500 transition-colors">
+                   <button onClick={() => deleteNotification(n._id)} className="p-2 text-text-muted opacity-40 hover:opacity-100 hover:text-secondary transition-all">
+                   <button onClick={() => deleteNotification(n._id)} className="p-2 text-text-muted opacity-40 hover:opacity-100 hover:text-sage-dark transition-all">
                       <Trash2 className="w-4 h-4" />
                    </button>
                 </div>
@@ -157,11 +158,11 @@ const Notifications = () => {
           </div>
         ) : (
           <div className="py-20 flex flex-col items-center justify-center text-center">
-             <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-6">
+             <div className="w-16 h-16 bg-neutral rounded-full flex items-center justify-center text-text-muted mb-6">
                 <Bell className="w-8 h-8 opacity-20" />
              </div>
-             <p className="text-sm font-black text-slate-400 uppercase tracking-widest">Inbox Zero</p>
-             <p className="text-[11px] text-slate-400 font-bold mt-2 uppercase">No pending alerts to display.</p>
+             <p className="text-sm font-black text-text-muted uppercase tracking-widest">Inbox Zero</p>
+             <p className="text-[11px] text-text-muted font-bold mt-2 uppercase">No pending alerts to display.</p>
           </div>
         )}
       </div>

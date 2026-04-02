@@ -34,7 +34,7 @@ export const notificationService = {
     if (!adminEmail) return;
 
     const mailOptions = {
-      from: process.env.SMTP_FROM || `"Moreez Manager" <${process.env.YAHOO_EMAIL_USER}>`,
+      from: process.env.SMTP_FROM || `"Moreez Poly" <${process.env.YAHOO_EMAIL_USER}>`,
       to: adminEmail,
       subject: `LOW STOCK ALERT: ${product.name}`,
       html: `
@@ -59,7 +59,7 @@ export const notificationService = {
             <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}/inventory" style="display: inline-block; background-color: #0f172a; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 20px;">View Inventory Details</a>
           </div>
           <div style="background-color: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #f1f5f9;">
-            <p style="margin: 0; font-size: 11px; color: #94a3b8; text-transform: uppercase; font-weight: bold;">Moreez Manager Automation System</p>
+            <p style="margin: 0; font-size: 11px; color: #94a3b8; text-transform: uppercase; font-weight: bold;">Moreez Poly Automation System</p>
           </div>
         </div>
       `,
@@ -83,7 +83,7 @@ export const notificationService = {
     const mailOptions = {
       from: `"Moreez Security" <${process.env.YAHOO_EMAIL_USER}>`,
       to: userEmail,
-      subject: 'New Login Detected - Moreez Manager',
+      subject: 'New Login Detected - Moreez Poly',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #f1f5f9; border-radius: 8px; overflow: hidden;">
           <div style="background-color: #0f172a; padding: 20px; text-align: center;">
@@ -100,7 +100,7 @@ export const notificationService = {
             <p style="font-size: 14px; color: #64748b; line-height: 1.6;">If you did not authorize this login, please contact the system administrator immediately to secure your account.</p>
           </div>
           <div style="background-color: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #f1f5f9;">
-            <p style="margin: 0; font-size: 11px; color: #94a3b8; text-transform: uppercase; font-weight: bold;">Moreez Manager Security Protocols</p>
+            <p style="margin: 0; font-size: 11px; color: #94a3b8; text-transform: uppercase; font-weight: bold;">Moreez Poly Security Protocols</p>
           </div>
         </div>
       `,
@@ -124,7 +124,7 @@ export const notificationService = {
     const mailOptions = {
       from: `"Moreez Security" <${process.env.YAHOO_EMAIL_USER}>`,
       to: userEmail,
-      subject: 'Password Changed Successfully - Moreez Manager',
+      subject: 'Password Changed Successfully - Moreez Poly',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #f1f5f9; border-radius: 8px; overflow: hidden;">
           <div style="background-color: #0f172a; padding: 20px; text-align: center;">
@@ -141,7 +141,7 @@ export const notificationService = {
             <p style="font-size: 14px; color: #64748b; line-height: 1.6;">If you did not make this change, please recover your account immediately or contact support.</p>
           </div>
           <div style="background-color: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #f1f5f9;">
-            <p style="margin: 0; font-size: 11px; color: #94a3b8; text-transform: uppercase; font-weight: bold;">Moreez Manager Security Protocols</p>
+            <p style="margin: 0; font-size: 11px; color: #94a3b8; text-transform: uppercase; font-weight: bold;">Moreez Poly Security Protocols</p>
           </div>
         </div>
       `,
@@ -207,7 +207,7 @@ export const notificationService = {
                 <p style="font-size: 14px; color: #64748b; line-height: 1.6;">Please cross-reference these totals with your physical collection records to ensure full compliance for the week.</p>
               </div>
               <div style="background-color: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #f1f5f9;">
-                <p style="margin: 0; font-size: 11px; color: #94a3b8; text-transform: uppercase; font-weight: bold;">Moreez Manager Automation System</p>
+                <p style="margin: 0; font-size: 11px; color: #94a3b8; text-transform: uppercase; font-weight: bold;">Moreez Poly Automation System</p>
               </div>
             </div>
           `,

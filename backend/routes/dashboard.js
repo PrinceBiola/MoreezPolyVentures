@@ -48,10 +48,7 @@ router.get('/stats', async (req, res) => {
       recentSales,
       recentExpenses
     ] = await Promise.all([
-      Sale.aggregate([
-        { $match: dateFilter },
-        { $group: { _id: null, total: { $sum: "$totalAmount" } } }
-      ]),
+      Sale.find(dateFilter).populate('items.productId').lean(),
       Payment.aggregate([
         { $match: paymentDateFilter },
         { $group: { _id: null, total: { $sum: "$amount" } } }
@@ -70,13 +67,22 @@ router.get('/stats', async (req, res) => {
       Expense.find(expenseDateFilter).sort({ date: -1 }).limit(5).lean()
     ]);
 
-    const totalSales = salesStats[0]?.total || 0;
+    // Calculate Sales and COGS from populated sales
+    const totalSales = salesStats.reduce((acc, s) => acc + (s.totalAmount || 0), 0);
+    const businessCOGS = salesStats.reduce((acc, sale) => {
+      const saleCOGS = (sale.items || []).reduce((itemAcc, item) => {
+        const cost = item.productId?.costPrice || 0;
+        return itemAcc + (Number(item.quantitySold || 0) * cost);
+      }, 0);
+      return acc + saleCOGS;
+    }, 0);
+
     const transportIncome = paymentStats[0]?.total || 0;
     const transportExpenses = expenseStats[0]?.total || 0;
     const stockValue = productStats[0]?.totalStockValue || 0;
     
-    const totalExpenses = transportExpenses + stockValue; 
-    const netProfit = (totalSales + transportIncome) - totalExpenses;
+    const totalExpenses = transportExpenses; 
+    const netProfit = (totalSales - businessCOGS) + (transportIncome - transportExpenses);
 
     const metrics = {
       totalSales,

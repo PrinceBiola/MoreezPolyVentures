@@ -15,10 +15,10 @@ const Button = ({
   const baseClasses = "inline-flex items-center justify-center gap-2 font-black uppercase tracking-widest text-[11px] py-2.5 px-5 rounded-lg transition-all shadow-sm active:scale-[0.98]";
   
   const variants = {
-    primary: "bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-100 hover:shadow-md",
-    secondary: "bg-amber-500 hover:bg-amber-600 text-white shadow-amber-100 hover:shadow-md",
-    neutral: "bg-slate-50 border border-slate-200 hover:bg-slate-100 text-slate-600 hover:text-slate-900",
-    danger: "bg-rose-500 hover:bg-rose-600 text-white shadow-rose-100 hover:shadow-md outline-none focus:ring-4 focus:ring-rose-100",
+    primary: "bg-primary hover:bg-accent text-white shadow-primary/20 hover:shadow-md",
+    secondary: "bg-secondary hover:bg-primary text-white shadow-secondary/20 hover:shadow-md",
+    neutral: "bg-neutral border border-border-light hover:bg-neutral/80 text-text-muted hover:text-text-main",
+    danger: "bg-secondary/20 border border-secondary/30 hover:bg-secondary hover:text-white text-secondary shadow-sm hover:shadow-md outline-none focus:ring-4 focus:ring-secondary/10",
   };
 
   return (

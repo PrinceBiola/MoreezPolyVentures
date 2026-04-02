@@ -1,0 +1,363 @@
+import React, { useState, useEffect } from 'react';
+import { debtService } from '../services/debtService';
+import { 
+  Users, 
+  UserPlus, 
+  Search, 
+  Filter, 
+  Trash2, 
+  CheckCircle2, 
+  Clock, 
+  Calendar, 
+  DollarSign, 
+  MoreVertical,
+  Plus,
+  ArrowRight,
+  ShieldCheck,
+  CreditCard,
+  Target
+} from 'lucide-react';
+import { toast } from 'react-hot-toast';
+import Button from '../components/ui/Button';
+import Loader from '../components/ui/Loader';
+import EmptyState from '../components/ui/EmptyState';
+import { formatNumber, parseNumber } from '../utils/formatters';
+
+const Debts = () => {
+  const [debts, setDebts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [activeTab, setActiveTab] = useState('Debtor'); // 'Debtor' or 'Creditor'
+  const [showModal, setShowModal] = useState(false);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('Pending');
+  
+  const [newRecord, setNewRecord] = useState({
+    type: 'Debtor',
+    name: '',
+    amount: '',
+    description: '',
+    date: new Date().toISOString().split('T')[0],
+    dueDate: '',
+    status: 'Pending'
+  });
+
+  useEffect(() => {
+    fetchDebts();
+  }, [activeTab, statusFilter]);
+
+  const fetchDebts = async () => {
+    setLoading(true);
+    try {
+      const res = await debtService.getDebts({ 
+        type: activeTab, 
+        status: statusFilter, 
+        search: search 
+      });
+      setDebts(res.data.data);
+    } catch (err) {
+      toast.error('Sync failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      await debtService.createDebt(newRecord);
+      toast.success('Record synchronized');
+      setShowModal(false);
+      fetchDebts();
+      setNewRecord({
+        type: activeTab,
+        name: '',
+        amount: '',
+        description: '',
+        date: new Date().toISOString().split('T')[0],
+        dueDate: '',
+        status: 'Pending'
+      });
+    } catch (err) {
+      toast.error('Record failed');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleSettle = async (id) => {
+    try {
+      await debtService.settleDebt(id);
+      toast.success('Balance updated');
+      fetchDebts();
+    } catch (err) {
+      toast.error('Update failed');
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Erase this record from history?')) return;
+    try {
+      await debtService.deleteDebt(id);
+      toast.success('Record purged');
+      fetchDebts();
+    } catch (err) {
+      toast.error('Purge failed');
+    }
+  };
+
+  const totalOutstanding = debts.reduce((acc, curr) => acc + curr.amount, 0);
+
+  return (
+    <div className="space-y-6 animate-fade-in text-left pb-10">
+      {/* Header Info */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 text-left">
+        <div>
+          <h2 className="text-3xl font-black text-text-main tracking-tighter uppercase leading-none">Debtors & Creditors</h2>
+          <p className="text-[10px] text-text-muted font-bold uppercase tracking-widest mt-3">Balance Ledger & Collections</p>
+        </div>
+        <div className="flex gap-3">
+           <Button icon={Plus} onClick={() => { setNewRecord({...newRecord, type: activeTab}); setShowModal(true); }}>Record Balance</Button>
+        </div>
+      </div>
+
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+         <div className="bg-white border border-border-light rounded-md p-6 shadow-sm flex items-center justify-between">
+            <div>
+               <p className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Total {activeTab}s</p>
+               <p className="text-2xl font-black text-text-main tracking-tighter tabular-nums">₦{totalOutstanding.toLocaleString()}</p>
+            </div>
+            <div className={`w-12 h-12 ${activeTab === 'Debtor' ? 'bg-primary/10 text-primary' : 'bg-secondary/10 text-secondary'} rounded-md flex items-center justify-center`}>
+               <Users className="w-5 h-5" />
+            </div>
+         </div>
+         <div className="bg-white border border-border-light rounded-md p-6 shadow-sm flex items-center justify-between opacity-60">
+            <div>
+               <p className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Settled this Month</p>
+               <p className="text-2xl font-black text-text-main tracking-tighter tabular-nums">₦0.00</p>
+            </div>
+            <div className="w-12 h-12 bg-neutral text-text-muted rounded-md flex items-center justify-center">
+               <CheckCircle2 className="w-5 h-5" />
+            </div>
+         </div>
+         <div className="bg-white border border-border-light rounded-md p-6 shadow-sm flex items-center justify-between border-dashed">
+            <div className="flex items-center gap-3">
+               <div className="w-10 h-10 bg-accent text-white rounded-full flex items-center justify-center shadow-lg">
+                  <ShieldCheck className="w-5 h-5" />
+               </div>
+               <div className="text-left">
+                  <p className="text-[10px] font-black text-text-main uppercase tracking-widest">Global Audit</p>
+                  <p className="text-[9px] text-text-muted font-bold uppercase mt-0.5">Status: Synchronized</p>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      {/* Main Ledger Section */}
+      <div className="bg-white border border-border-light rounded-md shadow-sm overflow-hidden flex flex-col min-h-[500px] text-left">
+         <div className="border-b border-border-light flex flex-col md:flex-row items-stretch md:items-center">
+            {/* Tabs */}
+            <div className="flex border-r border-border-light divide-x divide-border-light">
+               {['Debtor', 'Creditor'].map(tab => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`px-8 py-5 text-[11px] font-black uppercase tracking-widest transition-all ${activeTab === tab ? 'bg-white text-primary border-b-2 border-b-primary' : 'bg-neutral text-text-muted hover:bg-neutral hover:text-text-main'}`}
+                  >
+                    {tab}s
+                  </button>
+               ))}
+            </div>
+
+            {/* Filters */}
+            <div className="flex-1 p-4 flex flex-col md:flex-row gap-4 items-center justify-between bg-neutral/30">
+               <div className="relative w-full md:w-64 group">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted opacity-40 group-focus-within:text-primary transition-colors" />
+                  <input 
+                    type="text" 
+                    placeholder="Search ledger..." 
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && fetchDebts()}
+                    className="w-full pl-9 pr-4 py-2.5 bg-white border border-border-light rounded-md text-[11px] font-black uppercase tracking-widest focus:border-primary outline-none transition-all shadow-sm"
+                  />
+               </div>
+
+               <div className="flex items-center gap-4">
+                  <div className="flex bg-white p-1 rounded-md border border-border-light shadow-sm">
+                     {['Pending', 'Settled'].map(s => (
+                        <button
+                          key={s}
+                          onClick={() => setStatusFilter(s)}
+                          className={`px-4 py-1.5 rounded-md text-[10px] font-black uppercase tracking-widest transition-all ${statusFilter === s ? 'bg-primary text-white shadow-md' : 'text-text-muted hover:text-text-main'}`}
+                        >
+                          {s}
+                        </button>
+                     ))}
+                  </div>
+               </div>
+            </div>
+         </div>
+
+         {loading ? (
+            <div className="flex-1 flex items-center justify-center p-20">
+               <Loader size="xl" />
+            </div>
+         ) : debts.length > 0 ? (
+            <div className="overflow-x-auto">
+               <table className="w-full text-left">
+                   <thead>
+                      <tr className="border-b border-border-light bg-neutral/10">
+                         <th className="px-8 py-5 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-left">Subject / Identity</th>
+                         <th className="px-8 py-5 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-center">Reference Date</th>
+                         <th className="px-8 py-5 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-right">Outstanding Bal</th>
+                         <th className="px-8 py-5 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-right">Actions</th>
+                      </tr>
+                   </thead>
+                  <tbody className="divide-y divide-border-light">
+                     {debts.map(item => (
+                        <tr key={item._id} className="group hover:bg-neutral/30 transition-colors">
+                           <td className="px-8 py-6">
+                              <div className="flex items-center gap-4">
+                                 <div className={`w-10 h-10 rounded-md flex items-center justify-center shrink-0 ${statusFilter === 'Pending' ? 'bg-neutral text-text-muted/60 shadow-inner' : 'bg-primary/10 text-primary shadow-inner'}`}>
+                                    {statusFilter === 'Pending' ? <Clock className="w-4 h-4" /> : <CheckCircle2 className="w-4 h-4" />}
+                                 </div>
+                                 <div className="min-w-0">
+                                    <p className="text-[13px] font-black text-text-main leading-none uppercase truncate">{item.name}</p>
+                                    <p className="text-[10px] text-text-muted font-bold mt-2 uppercase tracking-tighter truncate opacity-70 italic">{item.description || 'No memo'}</p>
+                                 </div>
+                              </div>
+                           </td>
+                           <td className="px-8 py-6 text-center">
+                              <p className="text-[11px] font-black text-text-main/80 uppercase tabular-nums">{new Date(item.date).toLocaleDateString()}</p>
+                              {item.dueDate && (
+                                 <p className="text-[9px] text-secondary font-black mt-1 uppercase tracking-tighter">Due: {new Date(item.dueDate).toLocaleDateString()}</p>
+                              )}
+                           </td>
+                           <td className="px-8 py-6 text-right">
+                              <p className={`text-[16px] font-black tabular-nums leading-none ${activeTab === 'Debtor' ? 'text-primary' : 'text-secondary'}`}>₦{item.amount.toLocaleString()}</p>
+                              <p className="text-[9px] text-text-muted font-black mt-2 uppercase tracking-tighter opacity-60">Verified Balance</p>
+                           </td>
+                           <td className="px-8 py-6 text-right">
+                               <div className="flex items-center justify-end gap-2 text-left">
+                                  {statusFilter === 'Pending' && (
+                                     <button 
+                                       onClick={() => handleSettle(item._id)}
+                                       className="px-4 py-2 bg-primary/10 text-primary border border-primary/20 rounded-md text-[9px] font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-sm"
+                                     >
+                                        Mark Settled
+                                     </button>
+                                  )}
+                                  <button 
+                                    onClick={() => handleDelete(item._id)}
+                                    className="p-2 text-text-muted/40 hover:text-secondary hover:bg-secondary/5 rounded-md transition-all"
+                                  >
+                                     <Trash2 className="w-4 h-4" />
+                                  </button>
+                               </div>
+                            </td>
+                        </tr>
+                     ))}
+                  </tbody>
+               </table>
+            </div>
+         ) : (
+            <div className="flex-1">
+               <EmptyState 
+                  title={`Zero ${activeTab} Records`} 
+                  message={`Your ${activeTab} ledger is currently clear. No pending balances detected for this category.`}
+                  action={<Button variant="neutral" onClick={() => setShowModal(true)}>Record Manual Balance</Button>}
+               />
+            </div>
+         )}
+      </div>
+
+      {/* Record Entry Modal */}
+      {showModal && (
+         <div className="fixed inset-0 bg-accent/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+            <div className="bg-white border border-border-light rounded-3xl w-full max-w-2xl shadow-3xl animate-in zoom-in-95 duration-300 overflow-hidden text-left">
+               <div className="p-8 border-b border-border-light flex items-center justify-between bg-neutral/50">
+                  <div className="flex items-center gap-4">
+                     <div className={`w-12 h-12 ${activeTab === 'Debtor' ? 'bg-primary' : 'bg-secondary'} text-white rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 text-left`}>
+                        <UserPlus className="w-6 h-6" />
+                     </div>
+                     <div className="text-left">
+                        <h3 className="text-xl font-black text-text-main uppercase tracking-tighter leading-none">Record {activeTab}</h3>
+                        <p className="text-[10px] text-text-muted font-black tracking-[0.2em] uppercase mt-2">Balance Entry Form</p>
+                     </div>
+                  </div>
+                  <button onClick={() => setShowModal(false)} className="w-10 h-10 rounded-full hover:bg-neutral flex items-center justify-center transition-all">
+                     <Trash2 className="w-4 h-4 text-text-muted opacity-40 hover:opacity-100" />
+                  </button>
+               </div>
+
+               <form onSubmit={handleSubmit} className="p-10 space-y-8 text-left">
+                  <div className="space-y-6">
+                     <div className="grid grid-cols-2 gap-6">
+                        <div className="col-span-2">
+                           <label className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-3 block text-left">Subject Name (Person/Company)</label>
+                           <div className="relative group">
+                              <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted opacity-40 group-focus-within:text-primary transition-colors text-left" />
+                              <input 
+                                type="text" 
+                                required
+                                value={newRecord.name}
+                                onChange={(e) => setNewRecord({...newRecord, name: e.target.value})}
+                                className="w-full pl-10 pr-4 py-3.5 bg-neutral border border-border-light rounded-xl text-sm font-black uppercase tracking-tight focus:bg-white focus:border-primary outline-none transition-all shadow-inner text-left" 
+                                placeholder="Enter identity..."
+                              />
+                           </div>
+                        </div>
+                        <div>
+                           <label className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-3 block text-left">Principal Amount (₦)</label>
+                           <div className="relative group">
+                              <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted opacity-40 group-focus-within:text-primary transition-colors text-left" />
+                              <input 
+                                type="text" 
+                                required
+                                value={formatNumber(newRecord.amount)}
+                                onChange={(e) => setNewRecord({...newRecord, amount: parseNumber(e.target.value)})}
+                                className="w-full pl-10 pr-4 py-3.5 bg-neutral border border-border-light rounded-xl text-sm font-black uppercase tracking-tight focus:bg-white focus:border-primary outline-none transition-all shadow-inner text-left" 
+                                placeholder="0.00"
+                              />
+                           </div>
+                        </div>
+                        <div>
+                           <label className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-3 block text-left">Record Date</label>
+                           <div className="relative group">
+                              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted opacity-40 group-focus-within:text-primary transition-colors text-left" />
+                              <input 
+                                type="date" 
+                                value={newRecord.date}
+                                onChange={(e) => setNewRecord({...newRecord, date: e.target.value})}
+                                className="w-full pl-10 pr-4 py-3.5 bg-neutral border border-border-light rounded-xl text-[11px] font-black uppercase tracking-tight focus:bg-white focus:border-primary outline-none transition-all shadow-inner text-left" 
+                              />
+                           </div>
+                        </div>
+                        <div className="col-span-2">
+                           <label className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-3 block text-left">Transaction Memo / Description</label>
+                           <textarea 
+                             value={newRecord.description}
+                             onChange={(e) => setNewRecord({...newRecord, description: e.target.value})}
+                             className="w-full px-4 py-3.5 bg-neutral border border-border-light rounded-xl text-sm font-bold focus:bg-white focus:border-primary outline-none transition-all shadow-inner min-h-[100px] italic text-text-main text-left" 
+                             placeholder="Provide context for this balance..."
+                           />
+                        </div>
+                     </div>
+                  </div>
+
+                  <div className="pt-6 border-t border-border-light flex gap-4">
+                     <Button variant="neutral" onClick={() => setShowModal(false)} type="button" className="flex-1 !py-4 font-black">Discard</Button>
+                     <Button type="submit" loading={submitting} className={`flex-[2] !py-4 font-black uppercase tracking-widest ${activeTab === 'Debtor' ? '!bg-primary hover:!bg-accent' : '!bg-secondary hover:!bg-accent'}`}>Commit to Ledger</Button>
+                  </div>
+               </form>
+            </div>
+         </div>
+      )}
+    </div>
+  );
+};
+
+export default Debts;

@@ -7,7 +7,7 @@ const productSchema = new mongoose.Schema({
   openingBal: { type: Number, default: 0 }, // bags
   reorderLevel: { type: Number, default: 5 }, // bags
   currentStock: { type: Number, default: 0 }, // bags
-  weightKg: { type: Number, default: 1 }, // conversion (kg per bag)
+  weightKg: { type: Number, default: 25 }, // conversion (kg per bag)
   status: { type: String, default: 'In Stock' }, // In Stock, Reorder, Out of Stock
   costPrice: { type: Number, default: 0 }, 
   sellingPrice: { type: Number, default: 0 },

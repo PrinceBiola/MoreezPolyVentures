@@ -2,14 +2,14 @@
 
 @theme {
   --font-sans: "Inter", "Roboto", "ui-sans-serif", "system-ui";
-  --color-primary: #059669; /* Emerald 600 */
-  --color-secondary: #d97706; /* Amber 600 */
-  --color-accent: #db2777; /* Pink 600 */
-  --color-neutral: #f8fafc; /* Slate 50 */
+  --color-primary: #375534; /* Dark Sage */
+  --color-secondary: #6B9071; /* Medium Sage */
+  --color-accent: #0F2A1D; /* Deep Forest Green */
+  --color-neutral: #E3EED4; /* Creamy Sage Background */
   --color-card-bg: #ffffff;
-  --color-text-main: #0f172a; /* Slate 900 */
-  --color-text-muted: #64748b; /* Slate 500 */
-  --color-border-light: #e2e8f0; /* Slate 200 */
+  --color-text-main: #0F2A1D; /* Deep Forest Green */
+  --color-text-muted: #6B9071; /* Medium Sage */
+  --color-border-light: #AEC3B0; /* Light Sage */
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
@@ -18,7 +18,9 @@
 
 @layer base {
   body {
-    @apply bg-neutral text-slate-900 antialiased font-sans text-sm;
+    background-color: var(--color-neutral);
+    color: var(--color-text-main);
+    @apply antialiased font-sans text-sm;
   }
 }
 
@@ -28,22 +30,22 @@
     @apply inline-flex items-center justify-center gap-2 font-black uppercase tracking-widest text-[11px] py-2.5 px-5 rounded-md transition-all shadow-sm;
   }
 
-  /* Primary Button (Yellow) */
+  /* Primary Button (Forest) */
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 font-black uppercase tracking-widest text-[11px] py-2.5 px-5 rounded-md transition-all shadow-sm;
-    @apply bg-primary hover:bg-emerald-700 text-white shadow-primary/10 hover:shadow-md active:scale-[0.98];
+    @apply bg-primary hover:bg-accent text-white shadow-primary/10 hover:shadow-md active:scale-[0.98];
   }
   
-  /* Secondary/Success Button (Green) */
+  /* Secondary/Success Button (Sage) */
   .btn-secondary {
     @apply inline-flex items-center justify-center gap-2 font-black uppercase tracking-widest text-[11px] py-2.5 px-5 rounded-md transition-all shadow-sm;
-    @apply bg-secondary hover:bg-amber-700 text-white shadow-secondary/10 hover:shadow-md active:scale-[0.98];
+    @apply bg-secondary hover:bg-primary text-white shadow-secondary/10 hover:shadow-md active:scale-[0.98];
   }
 
   /* Neutral/Outline Button */
   .btn-neutral {
     @apply inline-flex items-center justify-center gap-2 font-black uppercase tracking-widest text-[11px] py-2.5 px-5 rounded-md transition-all shadow-sm;
-    @apply bg-white border border-border-light hover:bg-slate-50 text-slate-600 hover:text-slate-900;
+    @apply bg-white border border-border-light hover:bg-neutral text-text-muted hover:text-text-main;
   }
 
   .card-pro {
@@ -55,15 +57,15 @@
   }
   
   .table-pro th {
-    @apply bg-slate-50 border-b border-border-light px-3 py-2 text-[9px] font-black uppercase tracking-widest text-slate-400;
+    @apply bg-neutral/30 border-b border-border-light px-4 py-3 text-[9px] font-black uppercase tracking-widest text-text-muted;
   }
 
   .table-pro td {
-    @apply px-3 py-3 border-b border-border-light text-[13px] text-slate-700 font-bold;
+    @apply px-4 py-3.5 border-b border-border-light text-[13px] text-text-main font-bold;
   }
 
   .input-pro {
-    @apply w-full bg-white border border-border-light rounded-md py-2 px-3 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-slate-900 text-sm;
+    @apply w-full bg-white border border-border-light rounded-md py-2 px-3 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-text-main text-sm;
   }
 }
 
@@ -75,5 +77,5 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  @apply bg-gray-300 rounded-full hover:bg-gray-400;
+  @apply bg-primary/20 rounded-full hover:bg-primary/40;
 }

@@ -33,6 +33,7 @@ import businessRoutes from './routes/business.js';
 import transportRoutes from './routes/transport.js';
 import dashboardRoutes from './routes/dashboard.js';
 import notificationRoutes from './routes/notifications.js';
+import debtRoutes from './routes/debts.js';
 import protect from './middleware/auth.js';
 import { initCronJobs } from './utils/cronJobs.js';
 
@@ -41,6 +42,7 @@ app.use('/api/business', protect, businessRoutes);
 app.use('/api/transport', protect, transportRoutes);
 app.use('/api/dashboard', protect, dashboardRoutes);
 app.use('/api/notifications', protect, notificationRoutes);
+app.use('/api/debts', protect, debtRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({

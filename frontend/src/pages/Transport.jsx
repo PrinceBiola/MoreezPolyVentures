@@ -145,10 +145,10 @@ const Transport = () => {
 
   const getStatusUI = (status) => {
     switch (status) {
-      case 'Active': return { icon: <CheckCircle2 className="w-3 h-3" />, bg: 'bg-emerald-50 text-emerald-600 border-emerald-100', label: 'Active' };
-      case 'Maintenance': return { icon: <Wrench className="w-3 h-3" />, bg: 'bg-slate-100 text-slate-500 border-slate-200', label: 'Maintenance' };
-      case 'Impounded': return { icon: <AlertOctagon className="w-3 h-3" />, bg: 'bg-rose-50 text-rose-600 border-rose-100', label: 'Impounded' };
-      default: return { icon: <CheckCircle2 className="w-3 h-3" />, bg: 'bg-emerald-50 text-emerald-600 border-emerald-100', label: 'Active' };
+      case 'Active': return { icon: <CheckCircle2 className="w-3 h-3" />, bg: 'bg-primary/10 text-primary border-primary/20', label: 'Active' };
+      case 'Maintenance': return { icon: <Wrench className="w-3 h-3" />, bg: 'bg-neutral text-text-muted border-border-light', label: 'Maintenance' };
+      case 'Impounded': return { icon: <AlertOctagon className="w-3 h-3" />, bg: 'bg-accent/10 text-accent border-accent/20', label: 'Impounded' };
+      default: return { icon: <CheckCircle2 className="w-3 h-3" />, bg: 'bg-primary/10 text-primary border-primary/20', label: 'Active' };
     }
   };
 
@@ -156,18 +156,18 @@ const Transport = () => {
     <div className="space-y-6 animate-fade-in text-sm text-left pb-10 italic">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-2">
         <div>
-          <h2 className="text-3xl font-black text-slate-900 tracking-tighter uppercase leading-none">Vehicles</h2>
-          <p className="text-slate-400 font-bold text-[11px] uppercase tracking-tight mt-2">Manage and monitor your logistics fleet.</p>
+          <h2 className="text-3xl font-black text-text-main tracking-tighter uppercase leading-none">Vehicles</h2>
+          <p className="text-text-muted font-bold text-[11px] uppercase tracking-tight mt-2">Manage and monitor your logistics fleet.</p>
         </div>
         <div className="flex flex-col md:flex-row md:items-center gap-4">
            <div className="relative flex-1 md:w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted opacity-50" />
               <input 
                 type="text" 
                 placeholder="Search fleet..." 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-md text-xs font-bold focus:border-emerald-500 outline-none transition-all italic" 
+                className="w-full pl-10 pr-4 py-2 bg-white border border-border-light rounded-md text-xs font-bold focus:border-primary outline-none transition-all italic" 
               />
            </div>
            <Button onClick={() => setShowCarModal(true)} icon={Plus}>Add Vehicle</Button>
@@ -183,40 +183,40 @@ const Transport = () => {
             const statusUI = getStatusUI(car.status || 'Active');
             
             return (
-              <div key={car._id} className="bg-white border border-slate-200 rounded-md p-6 shadow-sm hover:shadow-md transition-all group flex flex-col relative overflow-hidden">
+              <div key={car._id} className="bg-white border border-border-light rounded-md p-6 shadow-sm hover:shadow-md transition-all group flex flex-col relative overflow-hidden">
                 <div className="flex justify-between items-start mb-2">
-                   <h3 className="text-2xl font-black text-slate-900 tracking-tighter uppercase leading-none">{car.plateNumber}</h3>
+                   <h3 className="text-2xl font-black text-text-main tracking-tighter uppercase leading-none">{car.plateNumber}</h3>
                    <div className="flex items-center gap-1">
                       <button 
-                        onClick={() => { setEditingCar({...car}); setShowEditModal(true); }}
-                        className="p-2 text-slate-300 hover:text-blue-500 transition-colors"
+                         onClick={() => { setEditingCar({...car}); setShowEditModal(true); }}
+                         className="p-2 text-text-muted opacity-40 hover:text-primary hover:opacity-100 transition-all"
                       >
                          <Edit2 className="w-4 h-4" />
                       </button>
                       <button 
-                        onClick={() => handleDeactivate(car)}
-                        className="p-2 text-slate-300 hover:text-amber-500 transition-colors"
+                         onClick={() => handleDeactivate(car)}
+                         className="p-2 text-text-muted opacity-40 hover:text-secondary hover:opacity-100 transition-all"
                       >
                          <Trash2 className="w-4 h-4" />
                       </button>
                    </div>
                 </div>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6">
+                <p className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-6">
                   {car.model} <span className="opacity-30 mx-1.5">·</span> {car.driverName}
                 </p>
                 
-                <div className="bg-slate-50 rounded-md p-4 mb-6 grid grid-cols-3 gap-2 border border-slate-100/50">
-                   <div className="text-left border-r border-slate-200/50">
-                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1.5 opacity-70">Revenue</p>
-                      <p className="text-[13px] font-black text-slate-900 tabular-nums">₦{performance.revenue.toLocaleString()}</p>
+                <div className="bg-neutral rounded-md p-4 mb-6 grid grid-cols-3 gap-2 border border-border-light/50">
+                   <div className="text-left border-r border-border-light px-2">
+                      <p className="text-[8px] font-black text-text-muted uppercase tracking-widest mb-1.5 opacity-70">Revenue</p>
+                      <p className="text-[13px] font-black text-text-main tabular-nums">₦{performance.revenue.toLocaleString()}</p>
                    </div>
-                   <div className="text-left border-r border-slate-200/50 px-2">
-                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1.5 opacity-70">Costs</p>
-                      <p className="text-[13px] font-black text-slate-900 tabular-nums">₦{performance.costs.toLocaleString()}</p>
+                   <div className="text-left border-r border-border-light px-2">
+                      <p className="text-[8px] font-black text-text-muted uppercase tracking-widest mb-1.5 opacity-70">Costs</p>
+                      <p className="text-[13px] font-black text-text-main tabular-nums">₦{performance.costs.toLocaleString()}</p>
                    </div>
                    <div className="text-right px-2">
-                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1.5 opacity-70">Net</p>
-                      <p className={`text-[13px] font-black tabular-nums ${performance.net >= 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
+                      <p className="text-[8px] font-black text-text-muted uppercase tracking-widest mb-1.5 opacity-70">Net</p>
+                      <p className={`text-[13px] font-black tabular-nums ${performance.net >= 0 ? 'text-primary' : 'text-secondary'}`}>
                          ₦{performance.net.toLocaleString()}
                       </p>
                    </div>
@@ -229,7 +229,7 @@ const Transport = () => {
                   </span>
                   <Link 
                     to={`/transport/${car._id}`}
-                    className="flex items-center gap-1.5 text-[10px] font-black text-emerald-600 uppercase tracking-widest hover:translate-x-1 transition-transform"
+                    className="flex items-center gap-1.5 text-[10px] font-black text-primary uppercase tracking-widest hover:translate-x-1 transition-transform"
                   >
                      View Details <ChevronRight className="w-3.5 h-3.5" />
                   </Link>
@@ -248,24 +248,24 @@ const Transport = () => {
       )}
 
       {showCarModal && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white border border-slate-100 rounded-md w-full max-w-lg p-10 shadow-3xl animate-in zoom-in-95 duration-200 text-left">
-            <h3 className="text-xl font-black text-slate-900 mb-8 tracking-tighter uppercase flex items-center gap-3 leading-none">
+        <div className="fixed inset-0 bg-accent/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white border border-border-light rounded-md w-full max-w-lg p-10 shadow-3xl animate-in zoom-in-95 duration-200 text-left">
+            <h3 className="text-xl font-black text-text-main mb-8 tracking-tighter uppercase flex items-center gap-3 leading-none">
                Add Vehicle
             </h3>
             <form onSubmit={handleAddCar} className="space-y-6">
               <div>
-                <label className="text-[9px] font-black text-slate-400 uppercase mb-2 block tracking-widest text-left">Model Name</label>
-                <input type="text" value={newCar.model} onChange={(e) => setNewCar({...newCar, model: e.target.value})} className="input-pro" placeholder="e.g. TOYOTA HIACE" required />
+                <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Model Name</label>
+                <input type="text" value={newCar.model} onChange={(e) => setNewCar({...newCar, model: e.target.value})} className="input-pro bg-neutral/30 border-border-light" placeholder="e.g. TOYOTA HIACE" required />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-[9px] font-black text-slate-400 uppercase mb-2 block tracking-widest text-left">Operator</label>
-                  <input type="text" value={newCar.driverName} onChange={(e) => setNewCar({...newCar, driverName: e.target.value})} className="input-pro" required />
+                   <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Operator</label>
+                   <input type="text" value={newCar.driverName} onChange={(e) => setNewCar({...newCar, driverName: e.target.value})} className="input-pro bg-neutral/30 border-border-light" required />
                 </div>
                 <div>
-                  <label className="text-[9px] font-black text-slate-400 uppercase mb-2 block tracking-widest text-left">Plate Number</label>
-                  <input type="text" value={newCar.plateNumber} onChange={(e) => setNewCar({...newCar, plateNumber: e.target.value})} className="input-pro" required />
+                   <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Plate Number</label>
+                   <input type="text" value={newCar.plateNumber} onChange={(e) => setNewCar({...newCar, plateNumber: e.target.value})} className="input-pro bg-neutral/30 border-border-light" required />
                 </div>
               </div>
               <div className="flex gap-4 pt-4">
@@ -278,32 +278,32 @@ const Transport = () => {
       )}
 
       {showEditModal && editingCar && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white border border-slate-100 rounded-md w-full max-w-lg p-10 shadow-3xl animate-in zoom-in-95 duration-200 text-left">
-            <h3 className="text-xl font-black text-slate-900 mb-8 tracking-tighter uppercase flex items-center gap-3 leading-none">
+        <div className="fixed inset-0 bg-accent/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white border border-border-light rounded-md w-full max-w-lg p-10 shadow-3xl animate-in zoom-in-95 duration-200 text-left">
+            <h3 className="text-xl font-black text-text-main mb-8 tracking-tighter uppercase flex items-center gap-3 leading-none text-left">
                Edit Vehicle
             </h3>
             <form onSubmit={handleUpdateCar} className="space-y-6">
               <div>
-                <label className="text-[9px] font-black text-slate-400 uppercase mb-2 block tracking-widest text-left">Model Name</label>
-                <input type="text" value={editingCar.model} onChange={(e) => setEditingCar({...editingCar, model: e.target.value})} className="input-pro" required />
+                <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Model Name</label>
+                <input type="text" value={editingCar.model} onChange={(e) => setEditingCar({...editingCar, model: e.target.value})} className="input-pro bg-neutral/30 border-border-light" required />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-[9px] font-black text-slate-400 uppercase mb-2 block tracking-widest text-left">Operator</label>
-                  <input type="text" value={editingCar.driverName} onChange={(e) => setEditingCar({...editingCar, driverName: e.target.value})} className="input-pro" required />
+                  <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Operator</label>
+                  <input type="text" value={editingCar.driverName} onChange={(e) => setEditingCar({...editingCar, driverName: e.target.value})} className="input-pro bg-neutral/30 border-border-light" required />
                 </div>
                 <div>
-                  <label className="text-[9px] font-black text-slate-400 uppercase mb-2 block tracking-widest text-left">Plate Number</label>
-                  <input type="text" value={editingCar.plateNumber} onChange={(e) => setEditingCar({...editingCar, plateNumber: e.target.value})} className="input-pro" required />
+                  <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Plate Number</label>
+                  <input type="text" value={editingCar.plateNumber} onChange={(e) => setEditingCar({...editingCar, plateNumber: e.target.value})} className="input-pro bg-neutral/30 border-border-light" required />
                 </div>
               </div>
               <div>
-                <label className="text-[9px] font-black text-slate-400 uppercase mb-2 block tracking-widest text-left">Operational Status</label>
+                <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Operational Status</label>
                 <select 
                   value={editingCar.status} 
                   onChange={(e) => setEditingCar({...editingCar, status: e.target.value})} 
-                  className="input-pro" 
+                  className="input-pro bg-neutral/30 border-border-light appearance-none" 
                   required
                 >
                   <option value="Active">Active</option>

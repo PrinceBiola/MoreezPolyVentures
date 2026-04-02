@@ -63,49 +63,49 @@ const CarDetail = () => {
   return (
     <div className="space-y-8 animate-fade-in text-left pb-12 italic">
       <div className="flex items-center gap-4">
-        <button onClick={() => navigate('/transport')} className="p-2 bg-white border border-slate-200 rounded-md text-slate-400 hover:text-slate-900 transition-all">
+        <button onClick={() => navigate('/transport')} className="p-2 bg-white border border-border-light rounded-md text-text-muted hover:text-text-main transition-all">
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div>
-          <h2 className="text-3xl font-black text-slate-900 tracking-tighter uppercase leading-none">{car.plateNumber}</h2>
-          <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-2">{car.model} <span className="opacity-30 mx-2">|</span> Operational Intelligence</p>
+          <h2 className="text-3xl font-black text-text-main tracking-tighter uppercase leading-none">{car.plateNumber}</h2>
+          <p className="text-[10px] text-text-muted font-black uppercase tracking-widest mt-2">{car.model} <span className="opacity-30 mx-2">|</span> Operational Intelligence</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <StatItem label="REVENUE" value={`₦${totalRevenue.toLocaleString()}`} icon={<ArrowUpRight className="text-emerald-500" />} color="emerald" />
-        <StatItem label="EXPENSES" value={`₦${totalExpenses.toLocaleString()}`} icon={<ArrowDownRight className="text-rose-500" />} color="rose" />
-        <StatItem label="NET PROFIT" value={`₦${netProfit.toLocaleString()}`} icon={<TrendingUp className="text-emerald-600" />} color="emerald" highlight={true} />
-        <StatItem label="PAYMENTS COLLECTED" value={(car.payments?.length || 0).toString()} icon={<Activity className="text-blue-500" />} color="blue" />
+        <StatItem label="REVENUE" value={`₦${totalRevenue.toLocaleString()}`} icon={<ArrowUpRight className="text-primary" />} color="primary" />
+        <StatItem label="EXPENSES" value={`₦${totalExpenses.toLocaleString()}`} icon={<ArrowDownRight className="text-secondary" />} color="secondary" />
+        <StatItem label="NET PROFIT" value={`₦${netProfit.toLocaleString()}`} icon={<TrendingUp className="text-primary" />} color="primary" highlight={true} />
+        <StatItem label="PAYMENTS COLLECTED" value={(car.payments?.length || 0).toString()} icon={<Activity className="text-primary" />} color="primary" />
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
         <div className="xl:col-span-2 space-y-8">
-           <div className="bg-white border border-slate-200 rounded-md p-8 shadow-sm">
-             <h4 className="text-[10px] font-black text-slate-900 uppercase tracking-[0.2em] mb-10 flex items-center gap-2">Performance trajectory</h4>
-             <div className="h-[300px] w-full">
+           <div className="bg-white border border-border-light rounded-md p-8 shadow-sm">
+             <h4 className="text-[10px] font-black text-text-main uppercase tracking-[0.2em] mb-10 flex items-center gap-2">Performance trajectory</h4>
+             <div className="h-[300px] w-full text-left">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 900, fill: '#94a3b8'}} />
-                    <YAxis axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 900, fill: '#94a3b8'}} />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E3EED4" />
+                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 900, fill: '#6B9071'}} />
+                    <YAxis axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 900, fill: '#6B9071'}} />
                     <Tooltip contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', fontSize: '12px', fontWeight: '900', textTransform: 'uppercase'}} />
-                    <Area type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={3} fillOpacity={0.1} fill="#10b981" />
-                    <Area type="monotone" dataKey="expense" stroke="#f43f5e" strokeWidth={3} fill="transparent" />
+                    <Area type="monotone" dataKey="revenue" stroke="#375534" strokeWidth={3} fillOpacity={0.1} fill="#375534" />
+                    <Area type="monotone" dataKey="expense" stroke="#6B9071" strokeWidth={3} fill="transparent" />
                   </AreaChart>
                 </ResponsiveContainer>
              </div>
            </div>
 
-           <div className="bg-white border border-slate-200 rounded-md overflow-hidden shadow-sm">
-             <div className="p-6 border-b border-slate-100"><h4 className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Recent Settlements</h4></div>
+           <div className="bg-white border border-border-light rounded-md overflow-hidden shadow-sm">
+             <div className="p-6 border-b border-border-light text-left"><h4 className="text-[10px] font-black text-text-main uppercase tracking-widest">Recent Settlements</h4></div>
              <table className="w-full text-left">
-                <tbody className="divide-y divide-slate-50 italic">
+                <tbody className="divide-y divide-neutral italic">
                    {(car.payments || []).slice(0, 5).map((p, idx) => (
                      <tr key={idx}>
-                        <td className="px-6 py-4 text-[13px] font-bold text-slate-900">{new Date(p.date).toLocaleDateString()}</td>
-                        <td className="px-6 py-4 text-[13px] font-black text-emerald-600">₦{Number(p.amount).toLocaleString()}</td>
-                        <td className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-slate-300">Driver Settlement</td>
+                        <td className="px-6 py-4 text-[13px] font-bold text-text-main">{new Date(p.date).toLocaleDateString()}</td>
+                        <td className="px-6 py-4 text-[13px] font-black text-primary text-left">₦{Number(p.amount).toLocaleString()}</td>
+                        <td className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-text-muted opacity-40 text-left">Driver Settlement</td>
                      </tr>
                    ))}
                 </tbody>
@@ -114,21 +114,21 @@ const CarDetail = () => {
         </div>
 
         <div className="space-y-6">
-           <div className="bg-slate-900 rounded-md p-8 text-white shadow-xl shadow-slate-900/20">
-              <h4 className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.2em] mb-4">Unit Summary</h4>
-              <div className="space-y-6">
+           <div className="bg-accent rounded-md p-8 text-white shadow-xl shadow-accent/20">
+              <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-4">Unit Summary</h4>
+              <div className="space-y-6 text-left">
                  <InfoRow label="Operator" value={car.driverName} />
                  <InfoRow label="Registration" value={car.plateNumber} />
                  <InfoRow label="Deployment" value={car.status} status={true} />
               </div>
            </div>
-           <div className="bg-white border border-slate-200 rounded-md p-6">
-              <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">Recent Expenses</h4>
+           <div className="bg-white border border-border-light rounded-md p-6">
+              <h4 className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-6 text-left">Recent Expenses</h4>
               <div className="space-y-4">
                  {(car.expenses || []).slice(0, 4).map((e, idx) => (
                     <div key={idx} className="flex justify-between items-center text-xs">
-                       <span className="font-bold text-slate-500 uppercase">{e.category}</span>
-                       <span className="font-black text-rose-500">₦{Number(e.amount).toLocaleString()}</span>
+                       <span className="font-bold text-text-muted uppercase text-left">{e.category}</span>
+                       <span className="font-black text-secondary text-left">₦{Number(e.amount).toLocaleString()}</span>
                     </div>
                  ))}
               </div>
@@ -140,19 +140,19 @@ const CarDetail = () => {
 };
 
 const StatItem = ({ label, value, icon, color, highlight }) => (
-  <div className={`bg-white border border-slate-200 rounded-md p-6 shadow-sm ${highlight ? 'ring-1 ring-emerald-500/20' : ''}`}>
+  <div className={`bg-white border border-border-light rounded-md p-6 shadow-sm ${highlight ? 'ring-1 ring-primary/20' : ''}`}>
     <div className="flex justify-between items-center mb-4">
-       <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{label}</span>
-       <div className={`w-8 h-8 rounded-md bg-${color}-50 flex items-center justify-center`}>{icon}</div>
+       <span className="text-[9px] font-black text-text-muted uppercase tracking-widest">{label}</span>
+       <div className={`w-8 h-8 rounded-md bg-${color}/10 flex items-center justify-center`}>{icon}</div>
     </div>
-    <p className={`text-2xl font-black text-slate-900 tracking-tighter tabular-nums`}>{value}</p>
+    <p className={`text-2xl font-black text-text-main tracking-tighter tabular-nums`}>{value}</p>
   </div>
 );
 
 const InfoRow = ({ label, value, status }) => (
   <div className="flex justify-between items-center py-1 border-b border-white/5 pb-3">
-    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{label}</span>
-    <span className={`text-[13px] font-black ${status ? 'px-2 py-0.5 bg-emerald-500 text-white rounded-md text-[9px]' : ''}`}>{value}</span>
+    <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">{label}</span>
+    <span className={`text-[13px] font-black ${status ? 'px-2 py-0.5 bg-primary text-white rounded-md text-[9px]' : ''}`}>{value}</span>
   </div>
 );
 
