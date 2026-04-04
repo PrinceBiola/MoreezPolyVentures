@@ -57,6 +57,7 @@ const Business = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (submitting) return;
     setSubmitting(true);
     try {
       if (isEditing) {

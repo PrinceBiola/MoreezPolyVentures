@@ -20,6 +20,15 @@ router.get('/', async (req, res) => {
 // Add product
 router.post('/', async (req, res) => {
   try {
+    const existingProduct = await Product.findOne({ 
+      name: { $regex: new RegExp(`^${req.body.name}$`, 'i') }, 
+      status: { $ne: 'Inactive' } 
+    });
+    
+    if (existingProduct) {
+      return res.status(400).json({ message: `An active product named "${req.body.name}" already exists. Please use a different name or edit the existing one.` });
+    }
+
     const product = new Product(req.body);
     // Explicitly set currentStock to openingBal for new product creation, ensuring it's a Number
     const openingBal = Number(req.body.openingBal || 0);
@@ -70,7 +79,14 @@ router.put('/:id', async (req, res) => {
 // Deactivate a product (Soft Delete)
 router.delete('/:id', async (req, res) => {
   try {
-    const updatedProduct = await Product.findByIdAndUpdate(req.params.id, { status: 'Inactive' }, { new: true });
+    const product = await Product.findById(req.params.id);
+    if (!product) return res.status(404).json({ message: 'Product not found' });
+    
+    const newName = `${product.name} (Archived - ${Math.floor(1000 + Math.random() * 9000)})`;
+    product.name = newName;
+    product.status = 'Inactive';
+    
+    const updatedProduct = await product.save();
     if (!updatedProduct) return res.status(404).json({ message: 'Product not found' });
     
     // Check for low stock on update

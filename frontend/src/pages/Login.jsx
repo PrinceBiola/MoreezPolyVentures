@@ -68,28 +68,36 @@ const Login = () => {
       </div>
 
       {/* Right Panel - Login Form */}
-      <div className="flex-1 flex items-center justify-center p-8 relative">
+      <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-8 relative">
         {/* Corner Watermark */}
         <div className="absolute bottom-12 right-12 text-6xl md:text-8xl font-black text-primary select-none pointer-events-none opacity-5">
           MP
         </div>
 
-        <div className="w-full max-w-md animate-in fade-in zoom-in-95 duration-700 px-4 md:px-0">
-          <div className="bg-white border border-border-light rounded-[1.5rem] md:rounded-[2rem] p-8 md:p-12 shadow-3xl relative">
+        {/* Mobile Branding (Hidden on lg screens) */}
+        <div className="lg:hidden flex flex-col items-center gap-3 mb-8 animate-in slide-in-from-top-10">
+          <div className="w-12 h-12 bg-accent rounded-sm flex items-center justify-center shadow-lg overflow-hidden">
+             <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
+          </div>
+          <h1 className="text-xl font-black text-text-main tracking-tighter uppercase">Moreez Poly</h1>
+        </div>
+
+        <div className="w-full max-w-md animate-in fade-in zoom-in-95 duration-700">
+          <div className="bg-white border border-border-light rounded-2xl md:rounded-[2rem] p-6 sm:p-8 md:p-12 shadow-3xl relative">
             <h3 className="text-2xl md:text-3xl font-black text-text-main tracking-tighter mb-2 leading-none">Account Login</h3>
-            <p className="text-sm text-text-muted font-bold mb-8 md:min-h-[40px] leading-relaxed">
+            <p className="text-xs sm:text-sm text-text-muted font-bold mb-6 md:mb-8 md:min-h-[40px] leading-relaxed">
               Enter your credentials to access the management dashboard.
             </p>
 
-            <form onSubmit={handleSubmit} className="space-y-8">
+            <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
               <div className="group text-left">
-                <label className="text-[10px] font-black text-text-muted uppercase mb-3 block tracking-widest ">Corporate Email Address</label>
+                <label className="text-[10px] font-black text-text-muted uppercase mb-2 md:mb-3 block tracking-widest">Corporate Email</label>
                 <div className="relative">
                   <input 
                     type="email" 
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-neutral/30 border border-border-light rounded-sm py-4 px-5 text-sm font-bold text-text-main focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all placeholder:text-text-muted opacity-60"
+                    className="w-full bg-neutral/30 border border-border-light rounded-sm py-3 px-4 md:py-4 md:px-5 text-sm font-bold text-text-main focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all placeholder:text-text-muted opacity-60"
                     placeholder="name@company.com"
                     required
                   />
@@ -97,8 +105,8 @@ const Login = () => {
               </div>
 
               <div className="group text-left">
-                <div className="flex justify-between items-center mb-3">
-                  <label className="text-[10px] font-black text-text-muted uppercase tracking-widest ">Access Password</label>
+                <div className="flex justify-between items-center mb-2 md:mb-3">
+                  <label className="text-[10px] font-black text-text-muted uppercase tracking-widest">Access Password</label>
                   <Link 
                     to="/forgot-password"
                     className="text-[9px] font-black text-secondary hover:text-accent uppercase tracking-widest transition-colors"
@@ -111,7 +119,7 @@ const Login = () => {
                     type="password" 
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full bg-neutral/30 border border-border-light rounded-sm py-4 px-5 text-sm font-bold text-text-main focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all"
+                    className="w-full bg-neutral/30 border border-border-light rounded-sm py-3 px-4 md:py-4 md:px-5 text-sm font-bold text-text-main focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all"
                     placeholder="••••••••"
                     required
                   />
@@ -126,15 +134,15 @@ const Login = () => {
                 </p>
               </div>
 
-              <Button type="submit" loading={loading} className="w-full !py-4 md:!py-5 !bg-primary hover:!bg-accent !rounded-sm text-sm md:text-md shadow-xl shadow-primary/20 flex items-center justify-center">
+              <Button type="submit" loading={loading} className="w-full !py-3.5 md:!py-5 !bg-primary hover:!bg-accent !rounded-sm text-sm md:text-md shadow-xl shadow-primary/20 flex items-center justify-center">
                 <Lock className="w-4 h-4 mr-2 opacity-60" />
                 Authenticate Access
               </Button>
             </form>
           </div>
 
-          <div className="mt-10 flex items-center justify-center gap-4 text-[10px] font-black text-text-muted uppercase tracking-widest">
-            <button className="hover:text-text-main transition-colors">Contact Technical Support</button>
+          <div className="mt-8 md:mt-10 flex items-center justify-center gap-4 text-[9px] md:text-[10px] font-black text-text-muted uppercase tracking-widest">
+            <button className="hover:text-text-main transition-colors">Technical Support</button>
             <span className="opacity-30">/</span>
             <button className="hover:text-text-main transition-colors">Security Policy</button>
           </div>
