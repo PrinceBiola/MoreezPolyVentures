@@ -6,6 +6,7 @@ const expenseSchema = new mongoose.Schema({
   description: { type: String },
   amount: { type: Number, required: true },
   carId: { type: mongoose.Schema.Types.ObjectId, ref: 'Car' }, // Optional for transport
+  expenseType: { type: String, enum: ['Transport', 'Business'], default: 'Transport' },
   status: { type: String, default: 'Active', index: true }, // Active, Voided
 }, { timestamps: true });
 

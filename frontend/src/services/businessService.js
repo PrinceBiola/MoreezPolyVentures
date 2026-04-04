@@ -79,6 +79,34 @@ export const businessService = {
       throw error;
     }
   },
+  getExpenses: async (params = {}) => {
+    try {
+      return await api.get('/business/expenses', { params });
+    } catch (error) {
+      throw error;
+    }
+  },
+  addExpense: async (data) => {
+    try {
+      return await api.post('/business/expenses', data);
+    } catch (error) {
+      throw error;
+    }
+  },
+  updateExpense: async (id, data) => {
+    try {
+      return await api.put(`/business/expenses/${id}`, data);
+    } catch (error) {
+      throw error;
+    }
+  },
+  deleteExpense: async (id) => {
+    try {
+      return await api.delete(`/business/expenses/${id}`);
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 export default businessService;

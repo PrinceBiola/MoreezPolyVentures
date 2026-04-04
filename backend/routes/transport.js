@@ -114,7 +114,7 @@ router.post('/cars', async (req, res) => {
 // Get all expenses
 router.get('/expenses', async (req, res) => {
   const { startDate, endDate, carId, category } = req.query;
-  let query = { status: 'Active' };
+  let query = { status: 'Active', expenseType: { $ne: 'Business' } };
 
   if (carId) query.carId = carId;
   if (category && category !== 'All') query.category = category;

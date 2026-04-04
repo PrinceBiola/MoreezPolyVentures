@@ -27,7 +27,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   // Auto-switch view based on current path on mount/reload
   useEffect(() => {
     const path = location.pathname;
-    if (['/business', '/purchases', '/sales', '/inventory'].some(p => path.startsWith(p))) {
+    if (['/business', '/purchases', '/sales', '/inventory', '/business-expenses'].some(p => path.startsWith(p))) {
       setView('business');
     } else if (['/transport', '/payments', '/expenses'].some(p => path.startsWith(p))) {
       setView('transport');
@@ -49,6 +49,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       { id: 'purchases', icon: ShoppingBag, label: 'Purchases', path: '/purchases' },
       { id: 'sales', icon: ShoppingCart, label: 'Sales', path: '/sales' },
       { id: 'inventory', icon: ClipboardList, label: 'Inventory', path: '/inventory' },
+      { id: 'business_expenses', icon: ShieldCheck, label: 'Business Expenses', path: '/business-expenses' },
     ],
     transport: [
       { id: 'transport', icon: Truck, label: 'Vehicles', path: '/transport' },

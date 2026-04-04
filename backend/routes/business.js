@@ -2,6 +2,7 @@ import express from 'express';
 import Product from '../models/Product.js';
 import Sale from '../models/Sale.js';
 import Purchase from '../models/Purchase.js';
+import Expense from '../models/Expense.js';
 import { notificationService } from '../services/notificationService.js';
 
 const router = express.Router();
@@ -298,6 +299,69 @@ router.delete('/purchases/:id', async (req, res) => {
     purchase.status = 'Voided';
     await purchase.save();
     res.json({ message: 'Purchase record voided and stock reverted' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Get all business expenses
+router.get('/expenses', async (req, res) => {
+  const { startDate, endDate, category } = req.query;
+  let query = { status: 'Active', expenseType: 'Business' };
+
+  if (category && category !== 'All') query.category = category;
+
+  if (startDate || endDate) {
+    query.date = {};
+    if (startDate) query.date.$gte = new Date(startDate);
+    if (endDate) query.date.$lte = new Date(endDate);
+  }
+  try {
+    const expenses = await Expense.find(query).sort({ date: -1 }).lean();
+    res.json(expenses);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Add a business expense
+router.post('/expenses', async (req, res) => {
+  try {
+    const expenseData = { ...req.body, expenseType: 'Business' };
+    const expense = new Expense(expenseData);
+    const newExpense = await expense.save();
+
+    // Notify on expense record
+    await notificationService.createNotification(
+      'Business Expense Logged',
+      `₦${newExpense.amount.toLocaleString()} logged for ${newExpense.category}.`,
+      'warning',
+      'finance'
+    );
+
+    res.status(201).json(newExpense);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// Update a business expense
+router.put('/expenses/:id', async (req, res) => {
+  try {
+    const updatedExpense = await Expense.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    if (!updatedExpense) return res.status(404).json({ message: 'Expense not found' });
+    res.json(updatedExpense);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// Void a business expense (Soft Delete)
+router.delete('/expenses/:id', async (req, res) => {
+  try {
+    const expense = await Expense.findByIdAndUpdate(req.params.id, { status: 'Voided' }, { new: true });
+    if (!expense) return res.status(404).json({ message: 'Expense not found' });
+    res.json({ message: 'Expense record voided' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

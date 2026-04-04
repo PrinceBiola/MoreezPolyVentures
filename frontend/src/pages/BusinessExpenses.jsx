@@ -1,0 +1,347 @@
+import React, { useState, useEffect } from 'react';
+import { businessService } from '../services/businessService';
+import { 
+  Plus, 
+  Search, 
+  Trash2,
+  TrendingDown,
+  Edit3,
+  Filter,
+  X
+} from 'lucide-react';
+import { toast } from 'react-hot-toast';
+import Button from '../components/ui/Button';
+import Loader from '../components/ui/Loader';
+import EmptyState from '../components/ui/EmptyState';
+import DeactivateModal from '../components/ui/DeactivateModal';
+import { formatNumber, parseNumber } from '../utils/formatters';
+
+const DEFAULT_CATEGORIES = ['Office Supplies', 'Utilities', 'Salaries', 'Software Subs', 'Maintenance', 'Marketing', 'Miscellaneous'];
+
+const BusinessExpenses = () => {
+  const [expenses, setExpenses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [newExpense, setNewExpense] = useState({ 
+    category: '', 
+    amount: '', 
+    date: new Date().toISOString().split('T')[0], 
+    description: '' 
+  });
+  const [showDeactivateModal, setShowDeactivateModal] = useState(false);
+  const [expenseToDeactivate, setExpenseToDeactivate] = useState(null);
+  const [showCustomCategory, setShowCustomCategory] = useState(false);
+  const [customCategory, setCustomCategory] = useState('');
+
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingExpense, setEditingExpense] = useState(null);
+  const [filters, setFilters] = useState({ category: '', startDate: '', endDate: '' });
+  const [showFilters, setShowFilters] = useState(false);
+
+  useEffect(() => {
+    fetchData();
+  }, [filters]);
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const activeFilters = Object.fromEntries(Object.entries(filters).filter(([_, v]) => v));
+      const textSearchFilters = { ...activeFilters };
+      
+      const exRes = await businessService.getExpenses(textSearchFilters);
+      setExpenses(exRes.data);
+    } catch (err) {
+      toast.error('Sync failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRecordExpense = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      const payload = { 
+        ...newExpense, 
+        category: showCustomCategory ? customCategory : newExpense.category 
+      };
+      
+      if (!payload.category) {
+        toast.error('Category is required');
+        return;
+      }
+
+      await businessService.addExpense(payload);
+      toast.success('Expense recorded');
+      setShowModal(false);
+      fetchData();
+      setNewExpense({ category: '', amount: '', date: new Date().toISOString().split('T')[0], description: '' });
+      setCustomCategory('');
+      setShowCustomCategory(false);
+    } catch (err) {
+      toast.error('Submission failed');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDeactivate = async (id) => {
+    setExpenseToDeactivate(expenses.find(e => e._id === id));
+    setShowDeactivateModal(true);
+  };
+
+  const handleConfirmDeactivate = async () => {
+    if (!expenseToDeactivate) return;
+    setSubmitting(true);
+    try {
+      await businessService.deleteExpense(expenseToDeactivate._id);
+      toast.success('Expense voided');
+      setShowDeactivateModal(false);
+      setExpenseToDeactivate(null);
+      fetchData();
+    } catch (err) {
+      toast.error('Failed to void expense');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleEdit = (expense) => {
+    setEditingExpense({
+      ...expense,
+      date: new Date(expense.date).toISOString().split('T')[0]
+    });
+    setShowEditModal(true);
+  };
+
+  const handleUpdateExpense = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      await businessService.updateExpense(editingExpense._id, editingExpense);
+      toast.success('Expense updated');
+      setShowEditModal(false);
+      fetchData();
+    } catch (err) {
+      toast.error('Update failed');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const clearFilters = () => {
+    setFilters({ category: '', startDate: '', endDate: '' });
+    setShowFilters(false);
+  };
+
+  const totalThisMonth = expenses.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0);
+
+  return (
+    <div className="space-y-8 animate-fade-in text-left pb-10">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white border border-border-light rounded-md p-6 shadow-sm flex items-center justify-between group hover:border-primary/20 transition-all">
+          <div>
+            <p className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Business Monthly Expenses</p>
+            <p className="text-3xl font-black text-text-main tracking-tighter">₦{totalThisMonth.toLocaleString()}</p>
+          </div>
+          <div className="w-12 h-12 bg-secondary/10 text-secondary rounded-md flex items-center justify-center transition-transform group-hover:scale-110">
+            <TrendingDown className="w-6 h-6" />
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white border border-border-light rounded-md shadow-sm overflow-hidden flex flex-col min-h-[500px]">
+        <div className="p-4 md:p-6 border-b border-border-light flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <h2 className="text-xl md:text-2xl font-black text-text-main tracking-tighter uppercase leading-none">Business Expenses</h2>
+          <div className="flex flex-col sm:flex-row w-full md:w-auto gap-3">
+             <div className="relative flex-1 md:w-64">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted opacity-40" />
+                <input type="text" placeholder="Search expressions..." className="w-full pl-10 pr-4 py-2 bg-neutral border border-border-light rounded-xl text-xs font-bold focus:bg-white focus:border-primary outline-none transition-all" />
+             </div>
+             <div className="flex gap-3 w-full sm:w-auto">
+                <Button variant="neutral" onClick={() => setShowFilters(!showFilters)} icon={Filter} className="flex-1 sm:flex-none">Filters</Button>
+                <Button onClick={() => setShowModal(true)} icon={Plus} className="flex-1 sm:flex-none">Add</Button>
+             </div>
+          </div>
+        </div>
+
+        {showFilters && (
+          <div className="px-4 md:px-6 py-4 border-b border-border-light bg-neutral/20 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 animate-in slide-in-from-top-2 duration-200">
+             <div className="col-span-1">
+                <label className="text-[8px] font-black text-text-muted uppercase tracking-widest mb-2 block text-left">Category</label>
+                 <select value={filters.category} onChange={(e) => setFilters({...filters, category: e.target.value})} className="input-pro !py-2 !text-[11px] bg-white border-border-light focus:border-primary transition-all">
+                   <option value="">All Categories</option>
+                   {Array.from(new Set([...DEFAULT_CATEGORIES, ...expenses.map(ex => ex.category).filter(Boolean)])).sort().map(cat => (
+                     <option key={cat} value={cat}>{cat}</option>
+                   ))}
+                </select>
+             </div>
+             <div className="col-span-1">
+                <label className="text-[8px] font-black text-text-muted uppercase tracking-widest mb-2 block text-left">Start Date</label>
+                <input type="date" value={filters.startDate} onChange={(e) => setFilters({...filters, startDate: e.target.value})} className="input-pro !py-2 !text-[11px] bg-white border-border-light focus:border-primary transition-all" />
+             </div>
+             <div className="col-span-1 flex gap-2">
+                <div className="flex-1">
+                   <label className="text-[8px] font-black text-text-muted uppercase tracking-widest mb-2 block text-left">End Date</label>
+                   <input type="date" value={filters.endDate} onChange={(e) => setFilters({...filters, endDate: e.target.value})} className="input-pro !py-2 !text-[11px] bg-white border-border-light focus:border-primary transition-all" />
+                </div>
+                <div className="flex items-end pb-0.5">
+                   <button onClick={clearFilters} className="p-2 text-text-muted opacity-40 hover:opacity-100 hover:text-secondary transition-all"><X className="w-4 h-4" /></button>
+                </div>
+             </div>
+          </div>
+        )}
+        
+        {loading ? (
+          <div className="flex-1 flex items-center justify-center"><Loader size="lg" /></div>
+        ) : expenses.length > 0 ? (
+          <div className="overflow-x-auto no-scrollbar">
+            <table className="w-full text-left border-collapse text-sm">
+              <thead>
+                <tr className="border-b border-border-light bg-neutral/10 text-[10px] uppercase font-black text-text-muted tracking-widest whitespace-nowrap">
+                  <th className="px-6 py-4 min-w-[120px]">Date</th>
+                  <th className="px-6 py-4 min-w-[150px]">Category</th>
+                  <th className="px-6 py-4 min-w-[200px]">Description</th>
+                  <th className="px-6 py-4 text-right min-w-[120px]">Amount</th>
+                  <th className="px-6 py-4 text-right min-w-[100px]">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border-light italic">
+                {expenses.map((e) => (
+                  <tr key={e._id} className="hover:bg-neutral/20 transition-colors group">
+                    <td className="px-6 py-5 text-[13px] font-black text-text-main">{new Date(e.date).toLocaleDateString()}</td>
+                    <td className="px-6 py-5 text-[13px] font-bold text-text-main uppercase">{e.category}</td>
+                    <td className="px-6 py-5 text-[11px] font-bold text-text-muted truncate max-w-[200px]">{e.description || 'N/A'}</td>
+                    <td className="px-6 py-5 text-right font-black text-secondary">₦{Number(e.amount).toLocaleString()}</td>
+                    <td className="px-6 py-5 text-right space-x-2">
+                        <button onClick={() => handleEdit(e)} className="p-2 text-text-muted opacity-40 hover:opacity-100 hover:text-primary transition-all"><Edit3 className="w-4 h-4" /></button>
+                        <button onClick={() => handleDeactivate(e._id)} className="p-2 text-text-muted opacity-40 hover:opacity-100 hover:text-secondary"><Trash2 className="w-4 h-4" /></button>
+                     </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <EmptyState title="No Expenses" message="No business expenses recorded." action={<Button onClick={() => setShowModal(true)} icon={Plus}>Add Expense</Button>} />
+        )}
+      </div>
+
+      {showModal && (
+        <div className="fixed inset-0 bg-accent/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 text-left">
+          <div className="bg-white border border-border-light rounded-2xl w-full max-w-lg p-6 md:p-10 shadow-3xl animate-in zoom-in-95 duration-200">
+             <h3 className="text-xl font-black text-text-main mb-8 uppercase tracking-tighter leading-none">Record Business Expense</h3>
+             <form onSubmit={handleRecordExpense} className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                   <div>
+                      <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Category</label>
+                      <select 
+                        value={showCustomCategory ? 'others' : newExpense.category} 
+                        onChange={(e) => {
+                          if (e.target.value === 'others') {
+                            setShowCustomCategory(true);
+                            setNewExpense({...newExpense, category: ''});
+                          } else {
+                            setShowCustomCategory(false);
+                            setNewExpense({...newExpense, category: e.target.value});
+                          }
+                        }} 
+                        className="input-pro bg-neutral/30 border-border-light focus:bg-white transition-all" 
+                        required
+                      >
+                         <option value="">Select Category...</option>
+                         {Array.from(new Set([...DEFAULT_CATEGORIES, ...expenses.map(ex => ex.category).filter(Boolean)])).sort().map(cat => (
+                           <option key={cat} value={cat}>{cat}</option>
+                         ))}
+                         <option value="others">OTHERS (CUSTOM)</option>
+                      </select>
+                   </div>
+                   <div><label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Amount (₦)</label>
+                   <input type="text" value={formatNumber(newExpense.amount)} onChange={(e) => setNewExpense({...newExpense, amount: parseNumber(e.target.value)})} className="input-pro bg-neutral/30 border-border-light focus:bg-white text-secondary font-black" placeholder="0" required /></div>
+                </div>
+
+                {showCustomCategory && (
+                  <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+                     <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Specify Custom Category</label>
+                     <input 
+                        type="text" 
+                        value={customCategory} 
+                        onChange={(e) => setCustomCategory(e.target.value)} 
+                        className="input-pro border-primary/20 bg-primary/10" 
+                        placeholder="e.g. Catering, Consulting..." 
+                        required 
+                     />
+                  </div>
+                )}
+                
+                <div>
+                  <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Description (Optional)</label>
+                  <input type="text" value={newExpense.description} onChange={(e) => setNewExpense({...newExpense, description: e.target.value})} className="input-pro bg-neutral/30 border-border-light focus:bg-white transition-all" placeholder="Enter short description or memo..." />
+                </div>
+                
+                <div className="flex gap-4 pt-4">
+                   <Button variant="neutral" onClick={() => setShowModal(false)} className="flex-1">Discard</Button>
+                   <Button type="submit" loading={submitting} className="flex-1 uppercase font-black tracking-widest">Save</Button>
+                </div>
+             </form>
+          </div>
+        </div>
+      )}
+
+      {showEditModal && (
+        <div className="fixed inset-0 bg-accent/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 text-left">
+          <div className="bg-white border border-border-light rounded-md w-full max-w-lg p-10 shadow-3xl animate-in zoom-in-95 duration-200">
+             <h3 className="text-xl font-black text-text-main mb-8 uppercase tracking-tighter">Edit Expense</h3>
+             <form onSubmit={handleUpdateExpense} className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                   <div>
+                      <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Category</label>
+                      <select 
+                        value={editingExpense.category} 
+                        onChange={(e) => setEditingExpense({...editingExpense, category: e.target.value})} 
+                        className="input-pro bg-neutral/30 border-border-light focus:bg-white transition-all" 
+                        required
+                      >
+                         <option value="">Select Category...</option>
+                         {DEFAULT_CATEGORIES.map(cat => (
+                           <option key={cat} value={cat}>{cat}</option>
+                         ))}
+                      </select>
+                   </div>
+                   <div><label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Amount (₦)</label>
+                   <input type="text" value={formatNumber(editingExpense.amount)} onChange={(e) => setEditingExpense({...editingExpense, amount: parseNumber(e.target.value)})} className="input-pro bg-neutral/30 border-border-light focus:bg-white text-secondary font-black" placeholder="0" required /></div>
+                </div>
+                
+                <div className="grid grid-cols-1 gap-4">
+                   <div>
+                     <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Description</label>
+                     <input type="text" value={editingExpense.description || ''} onChange={(e) => setEditingExpense({...editingExpense, description: e.target.value})} className="input-pro bg-neutral/30 border-border-light focus:bg-white" />
+                   </div>
+                   <div><label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Date</label>
+                   <input type="date" value={editingExpense.date} onChange={(e) => setEditingExpense({...editingExpense, date: e.target.value})} className="input-pro bg-neutral/30 border-border-light focus:bg-white" required /></div>
+                </div>
+                
+                <div className="flex gap-4 pt-4">
+                   <Button variant="neutral" onClick={() => setShowEditModal(false)} className="flex-1">Discard</Button>
+                   <Button type="submit" loading={submitting} className="flex-1 uppercase font-black tracking-widest">Update</Button>
+                </div>
+             </form>
+          </div>
+        </div>
+      )}
+
+      <DeactivateModal 
+        isOpen={showDeactivateModal}
+        onClose={() => setShowDeactivateModal(false)}
+        onConfirm={handleConfirmDeactivate}
+        loading={submitting}
+        title="Void Expense"
+        itemName={expenseToDeactivate ? `${expenseToDeactivate.category} (₦${Number(expenseToDeactivate.amount).toLocaleString()})` : ''}
+        description="This action will cancel the expense record and remove it from calculations."
+      />
+    </div>
+  );
+};
+
+export default BusinessExpenses;

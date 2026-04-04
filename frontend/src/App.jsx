@@ -12,6 +12,7 @@ const Business = lazy(() => import('./pages/Business'));
 const Purchases = lazy(() => import('./pages/Purchases'));
 const Sales = lazy(() => import('./pages/Sales'));
 const Expenses = lazy(() => import('./pages/Expenses'));
+const BusinessExpenses = lazy(() => import('./pages/BusinessExpenses'));
 const Transport = lazy(() => import('./pages/Transport'));
 const Login = lazy(() => import('./pages/Login'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
@@ -80,6 +81,7 @@ function App() {
               <Route path="/inventory" element={<Inventory />} />
               <Route path="/purchases" element={<Purchases />} />
               <Route path="/sales" element={<Sales />} />
+              <Route path="/business-expenses" element={<BusinessExpenses />} />
               <Route path="/expenses" element={<Expenses />} />
               <Route path="/balances" element={<Debts />} />
               <Route path="/transport" element={<Transport />} />
