@@ -155,11 +155,11 @@ const Transport = () => {
   return (
     <div className="space-y-6 animate-fade-in text-sm text-left pb-10 italic">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-2">
-        <div>
-          <h2 className="text-3xl font-black text-text-main tracking-tighter uppercase leading-none">Vehicles</h2>
-          <p className="text-text-muted font-bold text-[11px] uppercase tracking-tight mt-2">Manage and monitor your logistics fleet.</p>
+        <div className="text-left">
+          <h2 className="text-2xl md:text-3xl font-black text-text-main tracking-tighter uppercase leading-none">Vehicles</h2>
+          <p className="text-text-muted font-bold text-[9px] md:text-[11px] uppercase tracking-tight mt-2">Manage and monitor your logistics fleet.</p>
         </div>
-        <div className="flex flex-col md:flex-row md:items-center gap-4">
+        <div className="flex flex-col sm:flex-row md:items-center gap-4 w-full md:w-auto">
            <div className="relative flex-1 md:w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted opacity-50" />
               <input 
@@ -167,10 +167,10 @@ const Transport = () => {
                 placeholder="Search fleet..." 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-white border border-border-light rounded-md text-xs font-bold focus:border-primary outline-none transition-all italic" 
+                className="w-full pl-10 pr-4 py-2 bg-white border border-border-light rounded-xl text-xs font-bold focus:border-primary outline-none transition-all italic" 
               />
            </div>
-           <Button onClick={() => setShowCarModal(true)} icon={Plus}>Add Vehicle</Button>
+           <Button onClick={() => setShowCarModal(true)} icon={Plus} className="w-full sm:w-auto">Add Vehicle</Button>
         </div>
       </div>
 
@@ -249,7 +249,7 @@ const Transport = () => {
 
       {showCarModal && (
         <div className="fixed inset-0 bg-accent/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white border border-border-light rounded-md w-full max-w-lg p-10 shadow-3xl animate-in zoom-in-95 duration-200 text-left">
+          <div className="bg-white border border-border-light rounded-2xl w-full max-w-lg p-6 md:p-10 shadow-3xl animate-in zoom-in-95 duration-200 text-left">
             <h3 className="text-xl font-black text-text-main mb-8 tracking-tighter uppercase flex items-center gap-3 leading-none">
                Add Vehicle
             </h3>
@@ -258,14 +258,14 @@ const Transport = () => {
                 <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Model Name</label>
                 <input type="text" value={newCar.model} onChange={(e) => setNewCar({...newCar, model: e.target.value})} className="input-pro bg-neutral/30 border-border-light" placeholder="e.g. TOYOTA HIACE" required />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                    <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Operator</label>
-                   <input type="text" value={newCar.driverName} onChange={(e) => setNewCar({...newCar, driverName: e.target.value})} className="input-pro bg-neutral/30 border-border-light" required />
+                   <input type="text" value={newCar.driverName} onChange={(e) => setNewCar({...newCar, driverName: e.target.value})} className="input-pro bg-neutral/30 border-border-light !py-3" required />
                 </div>
                 <div>
                    <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Plate Number</label>
-                   <input type="text" value={newCar.plateNumber} onChange={(e) => setNewCar({...newCar, plateNumber: e.target.value})} className="input-pro bg-neutral/30 border-border-light" required />
+                   <input type="text" value={newCar.plateNumber} onChange={(e) => setNewCar({...newCar, plateNumber: e.target.value})} className="input-pro bg-neutral/30 border-border-light !py-3" required />
                 </div>
               </div>
               <div className="flex gap-4 pt-4">

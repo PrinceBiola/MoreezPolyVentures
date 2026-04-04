@@ -55,14 +55,14 @@ const Inventory = () => {
   return (
     <div className="space-y-8 animate-fade-in text-left pb-10">
       {/* Header Info */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div>
-          <h2 className="text-3xl font-black text-text-main tracking-tighter uppercase">Inventory Overview</h2>
-          <p className="text-[10px] text-text-muted font-bold uppercase tracking-widest mt-1">Stock Levels & Tracking</p>
+          <h2 className="text-2xl md:text-3xl font-black text-text-main tracking-tighter uppercase leading-none">Inventory Overview</h2>
+          <p className="text-[9px] md:text-[10px] text-text-muted font-bold uppercase tracking-widest mt-2 px-1 border-l-2 border-primary/20 ml-0.5">Stock Levels & Tracking Console</p>
         </div>
-        <div className="text-right">
-           <p className="text-[9px] font-black text-text-muted uppercase tracking-widest">Last Global Sync</p>
-           <p className="text-xs font-black text-text-main mt-1 uppercase">{new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+        <div className="text-left md:text-right border-l md:border-l-0 md:border-r border-border-light pl-4 md:pl-0 md:pr-4 py-1">
+           <p className="text-[8px] md:text-[9px] font-black text-text-muted uppercase tracking-widest opacity-60">System Synchronized</p>
+           <p className="text-[10px] md:text-xs font-black text-text-main mt-1 uppercase tracking-tight">{new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
         </div>
       </div>
 
@@ -105,17 +105,17 @@ const Inventory = () => {
           </div>
         </div>
         
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto no-scrollbar">
           <table className="w-full text-left border-collapse text-sm">
             <thead>
               <tr className="border-b border-border-light bg-neutral/30">
-                <th className="px-6 py-4 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-left">Description / Item</th>
-                <th className="px-6 py-4 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-left">Grade</th>
-                <th className="px-6 py-4 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-center">Opening Bal (bags)</th>
-                <th className="px-6 py-4 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-center">Current Stock (bags)</th>
-                <th className="px-6 py-4 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-center">(kg) Conversion</th>
-                <th className="px-6 py-4 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-center">Reorder Lvl (bags)</th>
-                <th className="px-6 py-4 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-left">Status</th>
+                <th className="px-6 py-4 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-left min-w-[200px]">Description / Item</th>
+                <th className="px-6 py-4 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-left min-w-[100px]">Grade</th>
+                <th className="px-6 py-4 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-center min-w-[120px]">Opening Bal</th>
+                <th className="px-6 py-4 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-center min-w-[120px]">Current Stock</th>
+                <th className="px-6 py-4 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-center min-w-[120px]">KG Conv.</th>
+                <th className="px-6 py-4 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-center min-w-[120px]">Reorder Lvl</th>
+                <th className="px-6 py-4 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-left min-w-[100px]">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border-light">
@@ -162,16 +162,16 @@ const Inventory = () => {
         </div>
 
         {/* Footer Pagination */}
-        <div className="p-6 bg-neutral/30 border-t border-border-light flex justify-between items-center mt-auto">
-           <p className="text-[10px] font-black text-text-muted uppercase tracking-widest opacity-60">Showing {products.length} of {products.length} entries</p>
-           <div className="flex gap-2">
-              <button className="p-2 border border-border-light rounded-md text-text-muted hover:text-text-main transition-colors"><ChevronLeft className="w-4 h-4" /></button>
-              <button className="w-8 h-8 bg-accent text-white rounded-md text-[10px] font-black">1</button>
-              <button className="w-8 h-8 border border-border-light rounded-md text-[10px] font-black text-text-muted">2</button>
-              <button className="w-8 h-8 border border-border-light rounded-md text-[10px] font-black text-text-muted">3</button>
-              <button className="p-2 border border-border-light rounded-md text-text-muted hover:text-text-main transition-colors"><ChevronRight className="w-4 h-4" /></button>
-           </div>
-        </div>
+         <div className="p-4 md:p-6 bg-neutral/30 border-t border-border-light flex flex-col sm:flex-row gap-4 justify-between items-center mt-auto">
+            <p className="text-[9px] md:text-[10px] font-black text-text-muted uppercase tracking-widest opacity-60">Showing {products.length} entries</p>
+            <div className="flex gap-2">
+               <button className="p-2 border border-border-light rounded-md text-text-muted hover:text-text-main bg-white transition-colors"><ChevronLeft className="w-3.5 h-3.5" /></button>
+               <button className="w-8 h-8 bg-accent text-white rounded-md text-[10px] font-black">1</button>
+               <button className="w-8 h-8 border border-border-light bg-white rounded-md text-[10px] font-black text-text-muted">2</button>
+               <button className="w-8 h-8 border border-border-light bg-white rounded-md text-[10px] font-black text-text-muted">3</button>
+               <button className="p-2 border border-border-light rounded-md text-text-muted hover:text-text-main bg-white transition-colors"><ChevronRight className="w-3.5 h-3.5" /></button>
+            </div>
+         </div>
       </div>
 
       {/* Critical Stock Alerts Section */}

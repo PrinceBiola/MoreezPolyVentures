@@ -37,9 +37,9 @@ const ForgotPassword = () => {
 
       {/* Main Form Area */}
       <div className="flex-1 flex items-center justify-center p-8">
-        <div className="w-full max-w-sm animate-in fade-in zoom-in-95 duration-500">
-          <div className="bg-white border border-border-light rounded-sm p-10 shadow-xl relative">
-            <h3 className="text-2xl font-black text-text-main tracking-tighter mb-2 leading-none">Reset your password</h3>
+        <div className="w-full max-w-sm animate-in fade-in zoom-in-95 duration-500 px-4">
+          <div className="bg-white border border-border-light rounded-2xl md:rounded-sm p-8 md:p-10 shadow-xl relative">
+            <h3 className="text-xl md:text-2xl font-black text-text-main tracking-tighter mb-2 leading-none">Reset your password</h3>
             <p className="text-xs text-text-muted font-bold mb-8 leading-relaxed text-left">
               Enter your email address to receive a reset link.
             </p>
@@ -81,14 +81,14 @@ const ForgotPassword = () => {
       </div>
 
       {/* Footer Area */}
-      <div className="p-8 border-t border-border-light flex flex-col md:flex-row justify-between items-center bg-white">
-        <p className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-4 md:mb-0">
+      <div className="p-6 md:p-8 border-t border-border-light flex flex-col md:flex-row justify-between items-center bg-white gap-6">
+        <p className="text-[9px] md:text-[10px] font-black text-text-muted uppercase tracking-widest text-center md:text-left">
           © 2026 MOREEZ LOGISTICS. ALL RIGHTS RESERVED.
         </p>
-        <div className="flex gap-6 text-[10px] font-black text-text-muted uppercase tracking-widest">
-          <button className="hover:text-text-main transition-colors">Privacy Policy</button>
-          <button className="hover:text-text-main transition-colors">Terms of Service</button>
-          <button className="hover:text-text-main transition-colors">Help Center</button>
+        <div className="flex flex-wrap justify-center gap-4 md:gap-6 text-[9px] md:text-[10px] font-black text-text-muted uppercase tracking-widest">
+          <button className="hover:text-text-main transition-colors">Privacy</button>
+          <button className="hover:text-text-main transition-colors">Terms</button>
+          <button className="hover:text-text-main transition-colors">Help</button>
         </div>
       </div>
     </div>

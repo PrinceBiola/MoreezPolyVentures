@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, setIsOpen }) => {
   const { user, logout } = useAuth();
   const location = useLocation();
   const [view, setView] = useState('main'); // 'main', 'business', 'transport'
@@ -77,8 +77,9 @@ const Sidebar = () => {
               <NavLink
                 key={item.id}
                 to={item.path}
+                onClick={() => setIsOpen(false)}
                 className={({ isActive }) => `
-                  w-full flex items-center gap-3 px-4 py-3 rounded-md transition-all duration-300 group
+                  w-full flex items-center gap-3 px-4 py-4 rounded-md transition-all duration-300 group
                   ${isActive ? 'bg-primary/10 text-primary shadow-sm border border-primary/20' : 'text-text-muted hover:bg-neutral hover:text-text-main'}
                 `}
               >
@@ -112,6 +113,7 @@ const Sidebar = () => {
           <NavLink
             key={item.id}
             to={item.path}
+            onClick={() => setIsOpen(false)}
             className={({ isActive }) => `
               w-full flex items-center gap-3 px-4 py-3 rounded-md transition-all duration-300 group
               ${isActive ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm' : 'text-text-muted hover:bg-neutral hover:text-text-main'}
@@ -130,7 +132,10 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="w-64 h-screen bg-white flex flex-col sticky top-0 overflow-hidden border-r border-border-light shadow-sm">
+    <div className={`
+      fixed inset-y-0 left-0 z-[70] w-64 bg-white flex flex-col border-r border-border-light shadow-2xl transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 lg:shadow-sm
+      ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+    `}>
       {/* Brand Header */}
       <div className="p-8">
         <div className="flex items-center gap-3">

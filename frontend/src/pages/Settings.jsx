@@ -105,22 +105,23 @@ const Settings = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row gap-10 animate-fade-in text-left pb-16">
+    <div className="flex flex-col lg:flex-row gap-6 md:gap-10 animate-fade-in text-left pb-16">
       {/* Settings Navigation Sidebar */}
-      <div className="lg:w-72 shrink-0 space-y-10">
-         <div>
-            <h3 className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] mb-6">Configuration</h3>
-            <nav className="space-y-1">
+      <div className="lg:w-72 shrink-0">
+         <div className="bg-white border border-border-light rounded-2xl p-4 md:p-6 lg:p-0 lg:bg-transparent lg:border-0 lg:rounded-none lg:shadow-none">
+            <h3 className="hidden lg:block text-[10px] font-black text-text-muted uppercase tracking-[0.2em] mb-6">Configuration</h3>
+            <nav className="flex lg:flex-col gap-2 overflow-x-auto no-scrollbar lg:space-y-1">
                {tabs.map(tab => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-md transition-all font-black text-[11px] uppercase tracking-widest ${
-                      activeTab === tab.id ? 'bg-primary/10 text-primary' : 'text-text-muted hover:bg-neutral hover:text-text-main'
+                    className={`flex-1 lg:flex-none flex items-center justify-center lg:justify-start gap-3 px-4 py-3 rounded-xl lg:rounded-md transition-all font-black text-[10px] md:text-[11px] uppercase tracking-widest whitespace-nowrap ${
+                      activeTab === tab.id ? 'bg-primary/10 text-primary border border-primary/20 lg:border-0' : 'text-text-muted hover:bg-neutral hover:text-text-main border border-transparent'
                     }`}
                   >
                     <tab.icon className={`w-4 h-4 ${activeTab === tab.id ? 'text-primary' : 'text-text-muted'}`} />
-                    {tab.label}
+                    <span className="hidden sm:inline">{tab.label}</span>
+                    <span className="sm:hidden">{tab.id === 'notifications' ? 'Alerts' : tab.label}</span>
                   </button>
                ))}
             </nav>
@@ -130,13 +131,13 @@ const Settings = () => {
       {/* Settings Content Terminal */}
       <div className="flex-1 max-w-4xl space-y-12">
         {activeTab === 'general' && (
-          <section className="space-y-8 animate-in slide-in-from-bottom-2 duration-300">
+          <section className="space-y-6 md:space-y-8 animate-in slide-in-from-bottom-2 duration-300">
             <div>
-              <h2 className="text-2xl font-black text-text-main tracking-tighter uppercase leading-none">General Settings</h2>
-              <p className="text-text-muted font-bold text-[11px] uppercase tracking-tight mt-2 opacity-70">Manage your organization's core profile and localization settings.</p>
+              <h2 className="text-xl md:text-2xl font-black text-text-main tracking-tighter uppercase leading-none">General Settings</h2>
+              <p className="text-text-muted font-bold text-[9px] md:text-[11px] uppercase tracking-tight mt-2 opacity-70">Manage your organization's core profile and localization settings.</p>
             </div>
             
-            <form onSubmit={handleProfileUpdate} className="bg-white border border-border-light rounded-md p-8 shadow-sm space-y-8">
+            <form onSubmit={handleProfileUpdate} className="bg-white border border-border-light rounded-2xl p-6 md:p-8 shadow-sm space-y-6 md:space-y-8">
               <div>
                 <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Business Name</label>
                 <input 
@@ -166,13 +167,13 @@ const Settings = () => {
         )}
 
         {activeTab === 'account' && (
-          <section className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+          <section className="space-y-6 md:space-y-8 animate-in slide-in-from-bottom-4 duration-500">
             <div>
-              <h2 className="text-2xl font-black text-text-main tracking-tighter uppercase leading-none">Account & Security</h2>
-              <p className="text-text-muted font-bold text-[11px] uppercase tracking-tight mt-2 opacity-70">Update your credentials and manage authentication protocols.</p>
+              <h2 className="text-xl md:text-2xl font-black text-text-main tracking-tighter uppercase leading-none">Account & Security</h2>
+              <p className="text-text-muted font-bold text-[9px] md:text-[11px] uppercase tracking-tight mt-2 opacity-70">Update your credentials and manage authentication protocols.</p>
             </div>
 
-            <div className="bg-white border border-border-light rounded-md p-8 shadow-sm space-y-10">
+            <div className="bg-white border border-border-light rounded-2xl p-6 md:p-8 shadow-sm space-y-10">
               <form onSubmit={handleProfileUpdate} className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-10 border-b border-border-light">
                 <div>
                   <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Full Name</label>
@@ -180,7 +181,7 @@ const Settings = () => {
                     type="text" 
                     value={profileData.name} 
                     onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
-                    className="input-pro !border-border-light bg-neutral/10 focus:bg-white transition-all" 
+                    className="input-pro !border-border-light bg-neutral/10 focus:bg-white transition-all !py-3" 
                     required
                   />
                 </div>
@@ -249,17 +250,17 @@ const Settings = () => {
         )}
 
         {activeTab === 'notifications' && (
-          <section className="space-y-8 animate-in slide-in-from-bottom-6 duration-700">
+          <section className="space-y-6 md:space-y-8 animate-in slide-in-from-bottom-6 duration-700">
             <div>
-              <h2 className="text-2xl font-black text-text-main tracking-tighter uppercase leading-none">Notifications</h2>
-              <p className="text-text-muted font-bold text-[11px] uppercase tracking-tight mt-2 opacity-70">Configure automated alerts and reporting delivery schedules.</p>
+              <h2 className="text-xl md:text-2xl font-black text-text-main tracking-tighter uppercase leading-none">Notifications</h2>
+              <p className="text-text-muted font-bold text-[9px] md:text-[11px] uppercase tracking-tight mt-2 opacity-70">Configure automated alerts and reporting delivery schedules.</p>
             </div>
 
-            <div className="bg-white border border-border-light rounded-md p-8 shadow-sm">
-               <div className="flex items-center justify-between group">
-                  <div>
-                     <h4 className="text-[13px] font-black text-text-main uppercase tracking-tight line-clamp-1">Driver payment weekly reminder</h4>
-                     <p className="text-[10px] text-text-muted font-bold mt-1.5 uppercase opacity-60">Receive an automated manifest for weekly driver settlements.</p>
+            <div className="bg-white border border-border-light rounded-2xl p-6 md:p-8 shadow-sm">
+               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 group">
+                  <div className="text-left">
+                     <h4 className="text-[13px] font-black text-text-main uppercase tracking-tight">Driver payment weekly reminder</h4>
+                     <p className="text-[10px] text-text-muted font-bold mt-1.5 uppercase opacity-60 leading-relaxed">Receive an automated manifest for weekly driver settlements.</p>
                   </div>
                   <button 
                     onClick={handleToggleReminders}

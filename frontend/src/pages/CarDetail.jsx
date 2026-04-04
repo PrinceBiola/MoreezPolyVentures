@@ -72,57 +72,59 @@ const CarDetail = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <StatItem label="REVENUE" value={`₦${totalRevenue.toLocaleString()}`} icon={<ArrowUpRight className="text-primary" />} color="primary" />
-        <StatItem label="EXPENSES" value={`₦${totalExpenses.toLocaleString()}`} icon={<ArrowDownRight className="text-secondary" />} color="secondary" />
-        <StatItem label="NET PROFIT" value={`₦${netProfit.toLocaleString()}`} icon={<TrendingUp className="text-primary" />} color="primary" highlight={true} />
-        <StatItem label="PAYMENTS COLLECTED" value={(car.payments?.length || 0).toString()} icon={<Activity className="text-primary" />} color="primary" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        <StatItem label="REVENUE" value={`₦${totalRevenue.toLocaleString()}`} icon={<ArrowUpRight className="text-primary w-4 h-4 md:w-5 md:h-5" />} color="primary" />
+        <StatItem label="EXPENSES" value={`₦${totalExpenses.toLocaleString()}`} icon={<ArrowDownRight className="text-secondary w-4 h-4 md:w-5 md:h-5" />} color="secondary" />
+        <StatItem label="NET PROFIT" value={`₦${netProfit.toLocaleString()}`} icon={<TrendingUp className="text-primary w-4 h-4 md:w-5 md:h-5" />} color="primary" highlight={true} />
+        <StatItem label="COLLECTED" value={(car.payments?.length || 0).toString()} icon={<Activity className="text-primary w-4 h-4 md:w-5 md:h-5" />} color="primary" />
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-        <div className="xl:col-span-2 space-y-8">
-           <div className="bg-white border border-border-light rounded-md p-8 shadow-sm">
-             <h4 className="text-[10px] font-black text-text-main uppercase tracking-[0.2em] mb-10 flex items-center gap-2">Performance trajectory</h4>
-             <div className="h-[300px] w-full text-left">
+        <div className="xl:col-span-2 space-y-6 md:space-y-8">
+           <div className="bg-white border border-border-light rounded-2xl p-4 md:p-8 shadow-sm">
+             <h4 className="text-[10px] font-black text-text-main uppercase tracking-[0.2em] mb-6 md:mb-10 flex items-center gap-2">Performance trajectory</h4>
+             <div className="h-[200px] md:h-[300px] w-full text-left">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E3EED4" />
-                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 900, fill: '#6B9071'}} />
-                    <YAxis axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 900, fill: '#6B9071'}} />
-                    <Tooltip contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', fontSize: '12px', fontWeight: '900', textTransform: 'uppercase'}} />
-                    <Area type="monotone" dataKey="revenue" stroke="#375534" strokeWidth={3} fillOpacity={0.1} fill="#375534" />
-                    <Area type="monotone" dataKey="expense" stroke="#6B9071" strokeWidth={3} fill="transparent" />
-                  </AreaChart>
+                   <AreaChart data={chartData}>
+                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E3EED4" />
+                     <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 9, fontWeight: 900, fill: '#6B9071'}} />
+                     <YAxis axisLine={false} tickLine={false} tick={{fontSize: 9, fontWeight: 900, fill: '#6B9071'}} />
+                     <Tooltip contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', fontSize: '10px', fontWeight: '900', textTransform: 'uppercase'}} />
+                     <Area type="monotone" dataKey="revenue" stroke="#375534" strokeWidth={3} fillOpacity={0.1} fill="#375534" />
+                     <Area type="monotone" dataKey="expense" stroke="#6B9071" strokeWidth={3} fill="transparent" />
+                   </AreaChart>
                 </ResponsiveContainer>
              </div>
            </div>
 
-           <div className="bg-white border border-border-light rounded-md overflow-hidden shadow-sm">
-             <div className="p-6 border-b border-border-light text-left"><h4 className="text-[10px] font-black text-text-main uppercase tracking-widest">Recent Settlements</h4></div>
-             <table className="w-full text-left">
-                <tbody className="divide-y divide-neutral italic">
-                   {(car.payments || []).slice(0, 5).map((p, idx) => (
-                     <tr key={idx}>
-                        <td className="px-6 py-4 text-[13px] font-bold text-text-main">{new Date(p.date).toLocaleDateString()}</td>
-                        <td className="px-6 py-4 text-[13px] font-black text-primary text-left">₦{Number(p.amount).toLocaleString()}</td>
-                        <td className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-text-muted opacity-40 text-left">Driver Settlement</td>
-                     </tr>
-                   ))}
-                </tbody>
-             </table>
+           <div className="bg-white border border-border-light rounded-2xl overflow-hidden shadow-sm">
+             <div className="p-4 md:p-6 border-b border-border-light text-left"><h4 className="text-[10px] font-black text-text-main uppercase tracking-widest">Recent Settlements</h4></div>
+             <div className="overflow-x-auto no-scrollbar">
+                <table className="w-full text-left min-w-[300px]">
+                   <tbody className="divide-y divide-neutral italic">
+                      {(car.payments || []).slice(0, 5).map((p, idx) => (
+                        <tr key={idx}>
+                           <td className="px-4 md:px-6 py-4 text-[12px] md:text-[13px] font-bold text-text-main">{new Date(p.date).toLocaleDateString()}</td>
+                           <td className="px-4 md:px-6 py-4 text-[12px] md:text-[13px] font-black text-primary text-left">₦{Number(p.amount).toLocaleString()}</td>
+                           <td className="px-4 md:px-6 py-4 text-[9px] font-black uppercase tracking-widest text-text-muted opacity-40 text-left">Settlement</td>
+                        </tr>
+                      ))}
+                   </tbody>
+                </table>
+             </div>
            </div>
         </div>
 
         <div className="space-y-6">
-           <div className="bg-accent rounded-md p-8 text-white shadow-xl shadow-accent/20">
-              <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-4">Unit Summary</h4>
-              <div className="space-y-6 text-left">
+           <div className="bg-accent rounded-2xl p-6 md:p-8 text-white shadow-xl shadow-accent/20">
+              <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-4 text-left">Unit Summary</h4>
+              <div className="space-y-4 md:space-y-6 text-left">
                  <InfoRow label="Operator" value={car.driverName} />
                  <InfoRow label="Registration" value={car.plateNumber} />
                  <InfoRow label="Deployment" value={car.status} status={true} />
               </div>
            </div>
-           <div className="bg-white border border-border-light rounded-md p-6">
+           <div className="bg-white border border-border-light rounded-2xl p-6 shadow-sm">
               <h4 className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-6 text-left">Recent Expenses</h4>
               <div className="space-y-4">
                  {(car.expenses || []).slice(0, 4).map((e, idx) => (

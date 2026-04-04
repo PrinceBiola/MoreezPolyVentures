@@ -140,53 +140,57 @@ const Payments = () => {
       </div>
 
       <div className="bg-white border border-border-light rounded-md shadow-sm overflow-hidden flex flex-col min-h-[500px]">
-        <div className="p-6 border-b border-border-light flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <h2 className="text-2xl font-black text-text-main tracking-tighter uppercase leading-none">Driver Payments</h2>
-          <div className="flex w-full md:w-auto gap-3">
+        <div className="p-4 md:p-6 border-b border-border-light flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <h2 className="text-xl md:text-2xl font-black text-text-main tracking-tighter uppercase leading-none">Driver Payments</h2>
+          <div className="flex flex-col sm:flex-row w-full md:w-auto gap-3">
              <div className="relative flex-1 md:w-64">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted opacity-40" />
-                <input type="text" placeholder="Search payments..." className="w-full pl-10 pr-4 py-2 bg-neutral border border-border-light rounded-md text-xs font-bold focus:bg-white focus:border-primary outline-none transition-all" />
+                <input type="text" placeholder="Search payments..." className="w-full pl-10 pr-4 py-2 bg-neutral border border-border-light rounded-xl text-xs font-bold focus:bg-white focus:border-primary outline-none transition-all" />
              </div>
-             <Button variant="neutral" onClick={() => setShowFilters(!showFilters)} icon={Filter}>Filters</Button>
-             <Button onClick={() => setShowModal(true)} icon={Plus}>Record Payment</Button>
+             <div className="flex gap-3 w-full sm:w-auto">
+                <Button variant="neutral" onClick={() => setShowFilters(!showFilters)} icon={Filter} className="flex-1 sm:flex-none">Filters</Button>
+                <Button onClick={() => setShowModal(true)} icon={Plus} className="flex-1 sm:flex-none">Record</Button>
+             </div>
           </div>
         </div>
 
         {showFilters && (
-          <div className="px-6 py-4 border-b border-border-light bg-neutral/20 flex flex-wrap gap-4 animate-in slide-in-from-top-2 duration-200">
-             <div className="flex-1 min-w-[200px]">
-                <label className="text-[8px] font-black text-text-muted uppercase tracking-widest mb-2 block">Vehicle</label>
+          <div className="px-4 md:px-6 py-4 border-b border-border-light bg-neutral/20 grid grid-cols-1 sm:grid-cols-3 gap-4 animate-in slide-in-from-top-2 duration-200">
+             <div className="col-span-1">
+                <label className="text-[8px] font-black text-text-muted uppercase tracking-widest mb-2 block text-left">Vehicle</label>
                 <select value={filters.carId} onChange={(e) => setFilters({...filters, carId: e.target.value})} className="input-pro !py-2 !text-[11px] bg-white border-border-light focus:border-primary transition-all">
                    <option value="">All Vehicles</option>
                    {cars.map(c => <option key={c._id} value={c._id}>{c.plateNumber}</option>)}
                 </select>
              </div>
-             <div className="flex-1 min-w-[150px]">
-                <label className="text-[8px] font-black text-text-muted uppercase tracking-widest mb-2 block">Start Date</label>
+             <div className="col-span-1">
+                <label className="text-[8px] font-black text-text-muted uppercase tracking-widest mb-2 block text-left">Start Date</label>
                 <input type="date" value={filters.startDate} onChange={(e) => setFilters({...filters, startDate: e.target.value})} className="input-pro !py-2 !text-[11px] bg-white border-border-light focus:border-primary transition-all" />
              </div>
-             <div className="flex-1 min-w-[150px]">
-                <label className="text-[8px] font-black text-text-muted uppercase tracking-widest mb-2 block">End Date</label>
-                <input type="date" value={filters.endDate} onChange={(e) => setFilters({...filters, endDate: e.target.value})} className="input-pro !py-2 !text-[11px] bg-white border-border-light focus:border-primary transition-all" />
-             </div>
-             <div className="flex items-end pb-1">
-                <button onClick={clearFilters} className="p-2 text-text-muted opacity-40 hover:opacity-100 hover:text-secondary transition-all"><X className="w-4 h-4" /></button>
+             <div className="col-span-1 flex gap-2">
+                <div className="flex-1">
+                   <label className="text-[8px] font-black text-text-muted uppercase tracking-widest mb-2 block text-left">End Date</label>
+                   <input type="date" value={filters.endDate} onChange={(e) => setFilters({...filters, endDate: e.target.value})} className="input-pro !py-2 !text-[11px] bg-white border-border-light focus:border-primary transition-all" />
+                </div>
+                <div className="flex items-end pb-0.5">
+                   <button onClick={clearFilters} className="p-2 text-text-muted opacity-40 hover:opacity-100 hover:text-secondary transition-all"><X className="w-4 h-4" /></button>
+                </div>
              </div>
           </div>
         )}
         
         {loading ? (
-          <div className="flex-1 flex items-center justify-center"><Loader size="lg" /></div>
+          <div className="flex-1 flex items-center justify-center p-20"><Loader size="lg" /></div>
         ) : payments.length > 0 ? (
-          <div className="overflow-x-auto italic">
+          <div className="overflow-x-auto no-scrollbar italic">
             <table className="w-full text-left border-collapse text-sm">
               <thead>
-                <tr className="border-b border-neutral uppercase tracking-widest text-[10px] font-black text-text-muted opacity-60">
-                   <th className="px-6 py-4">Date</th>
-                   <th className="px-6 py-4">Vehicle</th>
-                   <th className="px-6 py-4">Operator</th>
-                   <th className="px-6 py-4 text-right">Amount Received</th>
-                   <th className="px-6 py-4 text-right">Actions</th>
+                <tr className="border-b border-neutral uppercase tracking-widest text-[10px] font-black text-text-muted opacity-60 whitespace-nowrap">
+                   <th className="px-6 py-4 min-w-[120px]">Date</th>
+                   <th className="px-6 py-4 min-w-[150px]">Vehicle</th>
+                   <th className="px-6 py-4 min-w-[150px]">Operator</th>
+                   <th className="px-6 py-4 text-right min-w-[150px]">Received</th>
+                   <th className="px-6 py-4 text-right min-w-[100px]">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral">
@@ -212,8 +216,8 @@ const Payments = () => {
 
       {showModal && (
         <div className="fixed inset-0 bg-accent/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 text-left">
-          <div className="bg-white border border-border-light rounded-md w-full max-w-lg p-10 shadow-3xl animate-in zoom-in-95 duration-200">
-             <h3 className="text-xl font-black text-text-main mb-8 uppercase tracking-tighter text-left">Record Payment</h3>
+          <div className="bg-white border border-border-light rounded-2xl w-full max-w-lg p-6 md:p-10 shadow-3xl animate-in zoom-in-95 duration-200">
+             <h3 className="text-xl font-black text-text-main mb-8 uppercase tracking-tighter text-left leading-none">Record Payment</h3>
              <form onSubmit={handleRecordPayment} className="space-y-6">
                 <div>
                    <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Vehicle</label>
@@ -222,12 +226,12 @@ const Payments = () => {
                       {cars.map(car => <option key={car._id} value={car._id}>{car.plateNumber} ({car.model})</option>)}
                    </select>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                   <div><label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Amount (₦)</label>
-                   <input type="text" value={formatNumber(newPayment.amount)} onChange={(e) => setNewPayment({...newPayment, amount: parseNumber(e.target.value)})} className="input-pro bg-neutral/30 border-border-light focus:bg-white text-primary font-black" placeholder="0" required /></div>
-                   <div><label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Date</label>
-                   <input type="date" value={newPayment.date} onChange={(e) => setNewPayment({...newPayment, date: e.target.value})} className="input-pro bg-neutral/30 border-border-light focus:bg-white" required /></div>
-                </div>
+                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div><label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Amount (₦)</label>
+                    <input type="text" value={formatNumber(newPayment.amount)} onChange={(e) => setNewPayment({...newPayment, amount: parseNumber(e.target.value)})} className="input-pro bg-neutral/30 border-border-light focus:bg-white text-primary font-black !py-3" placeholder="0" required /></div>
+                    <div><label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Date</label>
+                    <input type="date" value={newPayment.date} onChange={(e) => setNewPayment({...newPayment, date: e.target.value})} className="input-pro bg-neutral/30 border-border-light focus:bg-white !py-3" required /></div>
+                 </div>
                 <div className="flex gap-4 pt-4">
                    <Button variant="neutral" onClick={() => setShowModal(false)} className="flex-1">Discard</Button>
                    <Button type="submit" loading={submitting} className="flex-1 uppercase font-black tracking-widest">Save</Button>

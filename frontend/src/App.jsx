@@ -25,6 +25,7 @@ const Debts = lazy(() => import('./pages/Debts'));
 
 function App() {
   const { user, loading } = useAuth();
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
   if (loading) {
     return (
@@ -54,11 +55,20 @@ function App() {
   }
 
   return (
-    <div className="flex bg-neutral h-screen overflow-hidden">
-      <Sidebar />
-      <div className="flex-1 flex flex-col h-full overflow-hidden">
-        <Header />
-        <main className="flex-1 p-6 overflow-y-auto no-scrollbar bg-[#f8fafc]">
+    <div className="flex bg-neutral h-screen overflow-hidden relative">
+      <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+      
+      {/* Mobile Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-[#0F2A1D]/40 backdrop-blur-sm z-[60] lg:hidden animate-in fade-in duration-300"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      <div className="flex-1 flex flex-col h-full overflow-hidden w-full min-w-0">
+        <Header toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} isSidebarOpen={isSidebarOpen} />
+        <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto no-scrollbar bg-[#f8fafc]">
           <Suspense fallback={
             <div className="h-full flex items-center justify-center">
               <Loader size="lg" />

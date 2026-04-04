@@ -249,16 +249,16 @@ const Sales = () => {
             <Loader size="lg" />
           </div>
         ) : sales.length > 0 ? (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto no-scrollbar">
             <table className="w-full text-left border-collapse text-sm">
               <thead>
                 <tr className="border-b border-border-light bg-neutral/10 uppercase tracking-widest text-left">
-                  <th className="px-6 py-4 text-[10px] font-black text-text-muted leading-none">Date & Time</th>
-                  <th className="px-6 py-4 text-[10px] font-black text-text-muted leading-none">Transaction ID</th>
-                  <th className="px-6 py-4 text-[10px] font-black text-text-muted leading-none">Main Product</th>
-                  <th className="px-6 py-4 text-[10px] font-black text-text-muted leading-none text-right">Total Amount</th>
-                  <th className="px-6 py-4 text-[10px] font-black text-text-muted leading-none text-center">Status</th>
-                  <th className="px-6 py-4 text-[10px] font-black text-text-muted leading-none text-right">Actions</th>
+                  <th className="px-6 py-4 text-[10px] font-black text-text-muted leading-none min-w-[120px]">Date & Time</th>
+                  <th className="px-6 py-4 text-[10px] font-black text-text-muted leading-none min-w-[140px]">Transaction ID</th>
+                  <th className="px-6 py-4 text-[10px] font-black text-text-muted leading-none min-w-[180px]">Main Product</th>
+                  <th className="px-6 py-4 text-[10px] font-black text-text-muted leading-none text-right min-w-[120px]">Total Amount</th>
+                  <th className="px-6 py-4 text-[10px] font-black text-text-muted leading-none text-center min-w-[100px]">Status</th>
+                  <th className="px-6 py-4 text-[10px] font-black text-text-muted leading-none text-right min-w-[100px]">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border-light">
@@ -364,19 +364,19 @@ const Sales = () => {
              <div className="flex-1 overflow-y-auto p-8 pt-6 no-scrollbar bg-white/50">
                 <div className="space-y-10">
                    {/* Meta Section */}
-                   <div className="grid grid-cols-2 gap-8">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                      <div className="space-y-4">
                         <label className="text-[9px] font-black text-text-muted uppercase tracking-widest block text-left">Customer Name</label>
                         <div className="relative">
                            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted opacity-50" />
-                           <input type="text" value={newSale.customerName} onChange={(e) => setNewSale({...newSale, customerName: e.target.value})} className="input-pro !pl-10 !py-3.5 bg-neutral/30 border-border-light focus:bg-white" placeholder="Enter name or ID..." required />
+                           <input type="text" value={newSale.customerName} onChange={(e) => setNewSale({...newSale, customerName: e.target.value})} className="input-pro !pl-10 !py-3 bg-neutral/30 border-border-light focus:bg-white" placeholder="Enter name or ID..." required />
                         </div>
                      </div>
                      <div className="space-y-4">
                         <label className="text-[9px] font-black text-text-muted uppercase tracking-widest block text-left">Sale Date</label>
                         <div className="relative">
                            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted opacity-50 outline-none" />
-                           <input type="date" value={newSale.date} onChange={(e) => setNewSale({...newSale, date: e.target.value})} className="input-pro !pl-10 !py-3.5 bg-neutral/30 border-border-light focus:bg-white" required />
+                           <input type="date" value={newSale.date} onChange={(e) => setNewSale({...newSale, date: e.target.value})} className="input-pro !pl-10 !py-3 bg-neutral/30 border-border-light focus:bg-white" required />
                         </div>
                      </div>
                    </div>
@@ -399,32 +399,36 @@ const Sales = () => {
                            const kg = prodInfo ? (Number(item.quantitySold || 0) * (prodInfo.weightKg || 1)) : 0;
                            
                            return (
-                             <div key={idx} className="grid grid-cols-12 gap-4 items-end group animate-in slide-in-from-right-2 duration-300">
-                                <div className="col-span-4">
-                                   {idx === 0 && <label className="text-[9px] font-black text-text-muted uppercase tracking-widest mb-2 block text-left">Product</label>}
+                             <div key={idx} className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-end group animate-in slide-in-from-right-2 duration-300 bg-neutral/10 sm:bg-transparent p-4 sm:p-0 rounded-xl">
+                                <div className="col-span-full sm:col-span-4">
+                                   <label className="text-[9px] font-black text-text-muted uppercase tracking-widest mb-2 block text-left sm:hidden">Product</label>
+                                   {idx === 0 && <label className="text-[9px] font-black text-text-muted uppercase tracking-widest mb-2 hidden sm:block text-left">Product</label>}
                                    <div className="relative">
                                       <Box className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted opacity-50 pointer-events-none" />
-                                      <select value={item.productId} onChange={(e) => updateItem(idx, 'productId', e.target.value)} className="input-pro !pl-10 !text-xs !py-3.5 bg-neutral/30 border-border-light appearance-none focus:bg-white outline-none">
+                                      <select value={item.productId} onChange={(e) => updateItem(idx, 'productId', e.target.value)} className="input-pro !pl-10 !text-xs !py-3 bg-neutral/30 border-border-light appearance-none focus:bg-white outline-none">
                                          <option value="">Choose Asset...</option>
                                          {products.map(p => <option key={p._id} value={p._id}>{p.name} ({p.grade})</option>)}
                                       </select>
                                    </div>
                                 </div>
-                                <div className="col-span-2">
-                                   {idx === 0 && <label className="text-[9px] font-black text-text-muted uppercase tracking-widest mb-2 block text-left">Quantity</label>}
-                                   <input type="text" value={formatNumber(item.quantitySold)} onChange={(e) => updateItem(idx, 'quantitySold', parseNumber(e.target.value))} className="input-pro !text-xs !py-3.5 bg-neutral/30 border-border-light font-black text-text-main" placeholder="0" />
+                                <div className="col-span-full sm:col-span-2">
+                                   <label className="text-[9px] font-black text-text-muted uppercase tracking-widest mb-2 block text-left sm:hidden">Quantity</label>
+                                   {idx === 0 && <label className="text-[9px] font-black text-text-muted uppercase tracking-widest mb-2 hidden sm:block text-left">Quantity</label>}
+                                   <input type="text" value={formatNumber(item.quantitySold)} onChange={(e) => updateItem(idx, 'quantitySold', parseNumber(e.target.value))} className="input-pro !text-xs !py-3 bg-neutral/30 border-border-light font-black text-text-main" placeholder="0" />
                                 </div>
-                                <div className="col-span-2">
-                                   {idx === 0 && <label className="text-[9px] font-black text-text-muted uppercase tracking-widest mb-2 block text-left">Total Weight</label>}
-                                   <div className="input-pro !text-xs !py-3.5 bg-neutral/50 border-border-light text-text-muted/60 cursor-not-allowed font-bold italic truncate">
+                                <div className="col-span-full sm:col-span-2">
+                                   <label className="text-[9px] font-black text-text-muted uppercase tracking-widest mb-2 block text-left sm:hidden">Total Weight</label>
+                                   {idx === 0 && <label className="text-[9px] font-black text-text-muted uppercase tracking-widest mb-2 hidden sm:block text-left">Total Weight</label>}
+                                   <div className="input-pro !text-xs !py-3 bg-neutral/50 border-border-light text-text-muted/60 cursor-not-allowed font-bold italic truncate">
                                       {kg.toLocaleString()}
                                    </div>
                                 </div>
-                                <div className="col-span-3">
-                                   {idx === 0 && <label className="text-[9px] font-black text-text-muted uppercase tracking-widest mb-2 block text-right">Price/Bag (₦)</label>}
-                                   <input type="text" value={formatNumber(item.salesPrice)} onChange={(e) => updateItem(idx, 'salesPrice', parseNumber(e.target.value))} className="input-pro !text-xs !py-3.5 bg-primary/10 border-primary/20 text-right font-black text-primary focus:bg-white outline-none" placeholder="0.00" />
+                                <div className="col-span-full sm:col-span-3">
+                                   <label className="text-[9px] font-black text-text-muted uppercase tracking-widest mb-2 block text-left sm:hidden">Price/Bag (₦)</label>
+                                   {idx === 0 && <label className="text-[9px] font-black text-text-muted uppercase tracking-widest mb-2 hidden sm:block text-right">Price/Bag (₦)</label>}
+                                   <input type="text" value={formatNumber(item.salesPrice)} onChange={(e) => updateItem(idx, 'salesPrice', parseNumber(e.target.value))} className="input-pro !text-xs !py-3 bg-primary/10 border-primary/20 text-right font-black text-primary focus:bg-white outline-none" placeholder="0.00" />
                                 </div>
-                                <div className="col-span-1 flex items-center justify-center pb-2">
+                                <div className="col-span-full sm:col-span-1 flex items-center justify-end sm:justify-center pb-2">
                                    <button type="button" onClick={() => removeLineItem(idx)} className="w-10 h-10 rounded-full hover:bg-secondary/10 text-text-muted hover:text-secondary transition-all flex items-center justify-center">
                                       <Trash2 className="w-4 h-4" />
                                    </button>
@@ -439,11 +443,11 @@ const Sales = () => {
 
                 {/* Footer Calculations & Actions */}
                 <div className="p-8 border-t border-border-light bg-neutral/80 backdrop-blur-sm shrink-0">
-                   <div className="flex items-center justify-between mb-8">
+                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-6">
                       <div className="flex gap-10 text-left">
                          <div>
                             <p className="text-[9px] font-black text-text-muted uppercase tracking-[0.2em] mb-1">Total Items</p>
-                            <p className="text-xl font-black text-text-main leading-none">{newSale.items.length} Products</p>
+                            <p className="text-xl font-black text-text-main leading-none">{newSale.items.length} <span className="text-[10px] uppercase opacity-50">Units</span></p>
                          </div>
                          <div>
                             <p className="text-[9px] font-black text-text-muted uppercase tracking-[0.2em] mb-1">Total Weight</p>
@@ -455,9 +459,9 @@ const Sales = () => {
                             </p>
                          </div>
                       </div>
-                      <div className="text-right">
+                      <div className="text-left sm:text-right">
                          <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] mb-1">Grand Total</p>
-                         <p className="text-4xl font-black text-primary tracking-tighter shadow-primary/5 drop-shadow-sm leading-none">₦{totalPayable.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                         <p className="text-3xl md:text-4xl font-black text-primary tracking-tighter shadow-primary/5 drop-shadow-sm leading-none">₦{totalPayable.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
                       </div>
                    </div>
                    <div className="flex gap-4">

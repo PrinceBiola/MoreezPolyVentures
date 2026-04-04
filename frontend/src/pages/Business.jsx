@@ -138,29 +138,29 @@ const Business = () => {
       </div>
 
       <div className="bg-white border border-border-light rounded-md shadow-sm overflow-hidden flex flex-col min-h-[500px]">
-        <div className="p-6 border-b border-border-light flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-           <h2 className="text-2xl font-black text-text-main tracking-tighter uppercase leading-none">Catalog</h2>
-           <div className="flex w-full md:w-auto gap-3">
+        <div className="p-4 md:p-6 border-b border-border-light flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+           <h2 className="text-xl md:text-2xl font-black text-text-main tracking-tighter uppercase leading-none">Catalog</h2>
+           <div className="flex flex-col sm:flex-row w-full md:w-auto gap-3">
               <div className="relative flex-1 md:w-64">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted opacity-40" />
-                <input type="text" placeholder="Search catalog..." className="w-full pl-10 pr-4 py-2 bg-neutral border border-border-light rounded-md text-xs font-bold focus:bg-white focus:border-primary outline-none transition-all" />
+                <input type="text" placeholder="Search catalog..." className="w-full pl-10 pr-4 py-2 bg-neutral border border-border-light rounded-xl text-xs font-bold focus:bg-white focus:border-primary outline-none transition-all" />
               </div>
-              <Button onClick={openCreateModal} icon={Plus}>Add Item</Button>
+              <Button onClick={openCreateModal} icon={Plus} className="w-full sm:w-auto">Add Item</Button>
            </div>
         </div>
 
         {loading ? (
           <div className="flex-1 flex items-center justify-center"><Loader size="lg" /></div>
         ) : inventory.length > 0 ? (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto no-scrollbar">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-border-light bg-neutral/10 text-[10px] uppercase font-black text-text-muted tracking-widest">
-                  <th className="px-6 py-4">Item Details</th>
-                  <th className="px-6 py-4">Category</th>
-                  <th className="px-6 py-4">Price</th>
-                  <th className="px-6 py-4">Available Stock</th>
-                  <th className="px-6 py-4 text-right">Actions</th>
+                <tr className="border-b border-border-light bg-neutral/10 text-[10px] uppercase font-black text-text-muted tracking-widest whitespace-nowrap">
+                  <th className="px-6 py-4 min-w-[200px]">Item Details</th>
+                  <th className="px-6 py-4 min-w-[100px]">Category</th>
+                  <th className="px-6 py-4 min-w-[120px]">Price</th>
+                  <th className="px-6 py-4 min-w-[140px]">Available Stock</th>
+                  <th className="px-6 py-4 text-right min-w-[100px]">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border-light italic">
@@ -227,17 +227,17 @@ const Business = () => {
                           <div className="w-1.5 h-4 bg-primary rounded-full"></div>
                           <h4 className="text-[10px] font-black text-text-main uppercase tracking-widest text-left">Basic Details</h4>
                        </div>
-                       <div className="grid grid-cols-2 gap-6">
-                          <div className="col-span-2">
+                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="col-span-full">
                             <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Product Name</label>
                             <div className="relative">
                               <Box className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted opacity-40" />
-                              <input type="text" value={newItem.name} onChange={(e) => setNewItem({...newItem, name: e.target.value})} className="input-pro !pl-10 !py-3.5 bg-neutral/10 border-border-light focus:bg-white text-left" placeholder="e.g. DANGOTE CEMENT 3X" required />
+                              <input type="text" value={newItem.name} onChange={(e) => setNewItem({...newItem, name: e.target.value})} className="input-pro !pl-10 !py-3 bg-neutral/30 border-border-light focus:bg-white text-left" placeholder="e.g. DANGOTE CEMENT 3X" required />
                             </div>
                           </div>
-                          <div className="col-span-2">
+                          <div className="col-span-full">
                             <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Grade / Type</label>
-                            <input type="text" value={newItem.grade} onChange={(e) => setNewItem({...newItem, grade: e.target.value})} className="input-pro !py-3 bg-neutral/10 border-border-light text-left focus:bg-white" placeholder="e.g. 42.5N / Grade A" />
+                            <input type="text" value={newItem.grade} onChange={(e) => setNewItem({...newItem, grade: e.target.value})} className="input-pro !py-3 bg-neutral/30 border-border-light text-left focus:bg-white" placeholder="e.g. 42.5N / Grade A" />
                           </div>
                        </div>
                     </div>
@@ -248,18 +248,18 @@ const Business = () => {
                           <div className="w-1.5 h-4 bg-primary rounded-full"></div>
                           <h4 className="text-[10px] font-black text-text-main uppercase tracking-widest text-left">Stock Levels</h4>
                        </div>
-                       <div className="grid grid-cols-3 gap-6">
+                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                           <div className="col-span-1">
-                            <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Weight per Bag (kg)</label>
-                            <input type="text" value={formatNumber(newItem.weightKg)} onChange={(e) => setNewItem({...newItem, weightKg: parseNumber(e.target.value)})} className="input-pro !py-3 bg-neutral/10 border-border-light text-left focus:bg-white" placeholder="25" />
+                            <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Weight (kg)</label>
+                            <input type="text" value={formatNumber(newItem.weightKg)} onChange={(e) => setNewItem({...newItem, weightKg: parseNumber(e.target.value)})} className="input-pro !py-3 bg-neutral/30 border-border-light text-left focus:bg-white" placeholder="25" />
                           </div>
                           <div className="col-span-1">
-                            <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Starting Stock (Bags)</label>
-                            <input type="text" value={formatNumber(newItem.openingBal)} onChange={(e) => setNewItem({...newItem, openingBal: parseNumber(e.target.value)})} className="input-pro !py-3 bg-neutral/10 border-border-light font-black text-primary text-left focus:bg-white" required />
+                            <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Start Stock</label>
+                            <input type="text" value={formatNumber(newItem.openingBal)} onChange={(e) => setNewItem({...newItem, openingBal: parseNumber(e.target.value)})} className="input-pro !py-3 bg-neutral/30 border-border-light font-black text-primary text-left focus:bg-white" required />
                           </div>
                           <div className="col-span-1">
-                            <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Low Stock Alert Level</label>
-                            <input type="text" value={formatNumber(newItem.reorderLevel)} onChange={(e) => setNewItem({...newItem, reorderLevel: parseNumber(e.target.value)})} className="input-pro !py-3 bg-neutral/10 border-border-light font-black text-secondary text-left focus:bg-white" />
+                            <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Alert Level</label>
+                            <input type="text" value={formatNumber(newItem.reorderLevel)} onChange={(e) => setNewItem({...newItem, reorderLevel: parseNumber(e.target.value)})} className="input-pro !py-3 bg-neutral/30 border-border-light font-black text-secondary text-left focus:bg-white" />
                           </div>
                        </div>
                     </div>
@@ -270,10 +270,10 @@ const Business = () => {
                           <div className="w-1.5 h-4 bg-primary rounded-full"></div>
                           <h4 className="text-[10px] font-black text-text-main uppercase tracking-widest text-left">Product Prices</h4>
                        </div>
-                       <div className="grid grid-cols-2 gap-6">
+                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                           <div className="col-span-1">
                             <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Cost Price (₦)</label>
-                            <input type="text" value={formatNumber(newItem.costPrice)} onChange={(e) => setNewItem({...newItem, costPrice: parseNumber(e.target.value)})} className="input-pro !py-3 bg-neutral/10 border-border-light text-left focus:bg-white" placeholder="0" />
+                            <input type="text" value={formatNumber(newItem.costPrice)} onChange={(e) => setNewItem({...newItem, costPrice: parseNumber(e.target.value)})} className="input-pro !py-3 bg-neutral/30 border-border-light text-left focus:bg-white" placeholder="0" />
                           </div>
                           <div className="col-span-1">
                             <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Selling Price (₦)</label>
@@ -299,9 +299,9 @@ const Business = () => {
                 </div>
 
                 {/* Footer Actions */}
-                <div className="p-8 border-t border-border-light bg-neutral/80 backdrop-blur-sm shrink-0 flex gap-4">
-                   <Button variant="neutral" onClick={() => setShowModal(false)} className="flex-1 !py-4 font-black tracking-widest">Discard {isEditing ? 'Changes' : 'Entry'}</Button>
-                   <Button type="submit" loading={submitting} className="flex-2 !bg-primary hover:!bg-accent !py-4 shadow-xl shadow-primary/10 font-black tracking-widest uppercase truncate">{isEditing ? 'Save Changes' : 'Save Product'}</Button>
+                <div className="p-6 md:p-8 border-t border-border-light bg-neutral/80 backdrop-blur-sm shrink-0 flex flex-col md:flex-row gap-4">
+                   <Button variant="neutral" onClick={() => setShowModal(false)} className="w-full md:flex-1 !py-4 font-black tracking-widest">Discard Entry</Button>
+                   <Button type="submit" loading={submitting} className="w-full md:flex-2 !bg-primary hover:!bg-accent !py-4 shadow-xl shadow-primary/10 font-black tracking-widest uppercase truncate">{isEditing ? 'Save Changes' : 'Save Product'}</Button>
                 </div>
              </form>
           </div>

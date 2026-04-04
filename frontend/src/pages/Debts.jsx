@@ -114,11 +114,11 @@ const Debts = () => {
       {/* Header Info */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 text-left">
         <div>
-          <h2 className="text-3xl font-black text-text-main tracking-tighter uppercase leading-none">Debtors & Creditors</h2>
-          <p className="text-[10px] text-text-muted font-bold uppercase tracking-widest mt-3">Balance Ledger & Collections</p>
+          <h2 className="text-2xl md:text-3xl font-black text-text-main tracking-tighter uppercase leading-none">Debtors & Creditors</h2>
+          <p className="text-[9px] md:text-[10px] text-text-muted font-bold uppercase tracking-widest mt-2 md:mt-3 border-l-2 border-primary/20 pl-2">Balance Ledger & Collections</p>
         </div>
-        <div className="flex gap-3">
-           <Button icon={Plus} onClick={() => { setNewRecord({...newRecord, type: activeTab}); setShowModal(true); }}>Record Balance</Button>
+        <div className="flex gap-3 w-full md:w-auto">
+           <Button icon={Plus} onClick={() => { setNewRecord({...newRecord, type: activeTab}); setShowModal(true); }} className="w-full md:w-auto">Record Balance</Button>
         </div>
       </div>
 
@@ -159,12 +159,12 @@ const Debts = () => {
       <div className="bg-white border border-border-light rounded-md shadow-sm overflow-hidden flex flex-col min-h-[500px] text-left">
          <div className="border-b border-border-light flex flex-col md:flex-row items-stretch md:items-center">
             {/* Tabs */}
-            <div className="flex border-r border-border-light divide-x divide-border-light">
+            <div className="flex border-b md:border-b-0 md:border-r border-border-light divide-x divide-border-light">
                {['Debtor', 'Creditor'].map(tab => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`px-8 py-5 text-[11px] font-black uppercase tracking-widest transition-all ${activeTab === tab ? 'bg-white text-primary border-b-2 border-b-primary' : 'bg-neutral text-text-muted hover:bg-neutral hover:text-text-main'}`}
+                    className={`flex-1 md:flex-none px-6 md:px-8 py-4 md:py-5 text-[10px] md:text-[11px] font-black uppercase tracking-widest transition-all ${activeTab === tab ? 'bg-white text-primary border-b-2 border-b-primary' : 'bg-neutral text-text-muted hover:bg-neutral hover:text-text-main'}`}
                   >
                     {tab}s
                   </button>
@@ -206,20 +206,20 @@ const Debts = () => {
                <Loader size="xl" />
             </div>
          ) : debts.length > 0 ? (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto no-scrollbar">
                <table className="w-full text-left">
                    <thead>
-                      <tr className="border-b border-border-light bg-neutral/10">
-                         <th className="px-8 py-5 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-left">Subject / Identity</th>
-                         <th className="px-8 py-5 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-center">Reference Date</th>
-                         <th className="px-8 py-5 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-right">Outstanding Bal</th>
-                         <th className="px-8 py-5 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-right">Actions</th>
+                      <tr className="border-b border-border-light bg-neutral/10 whitespace-nowrap">
+                         <th className="px-6 md:px-8 py-4 md:py-5 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-left min-w-[250px]">Subject / Identity</th>
+                         <th className="px-6 md:px-8 py-4 md:py-5 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-center min-w-[150px]">Reference Date</th>
+                         <th className="px-6 md:px-8 py-4 md:py-5 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-right min-w-[150px]">Outstanding Bal</th>
+                         <th className="px-6 md:px-8 py-4 md:py-5 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-right min-w-[150px]">Actions</th>
                       </tr>
                    </thead>
                   <tbody className="divide-y divide-border-light">
                      {debts.map(item => (
                         <tr key={item._id} className="group hover:bg-neutral/30 transition-colors">
-                           <td className="px-8 py-6">
+                           <td className="px-6 md:px-8 py-4 md:py-6">
                               <div className="flex items-center gap-4">
                                  <div className={`w-10 h-10 rounded-md flex items-center justify-center shrink-0 ${statusFilter === 'Pending' ? 'bg-neutral text-text-muted/60 shadow-inner' : 'bg-primary/10 text-primary shadow-inner'}`}>
                                     {statusFilter === 'Pending' ? <Clock className="w-4 h-4" /> : <CheckCircle2 className="w-4 h-4" />}
@@ -230,24 +230,23 @@ const Debts = () => {
                                  </div>
                               </div>
                            </td>
-                           <td className="px-8 py-6 text-center">
+                           <td className="px-6 md:px-8 py-4 md:py-6 text-center">
                               <p className="text-[11px] font-black text-text-main/80 uppercase tabular-nums">{new Date(item.date).toLocaleDateString()}</p>
                               {item.dueDate && (
                                  <p className="text-[9px] text-secondary font-black mt-1 uppercase tracking-tighter">Due: {new Date(item.dueDate).toLocaleDateString()}</p>
                               )}
                            </td>
-                           <td className="px-8 py-6 text-right">
+                           <td className="px-6 md:px-8 py-4 md:py-6 text-right">
                               <p className={`text-[16px] font-black tabular-nums leading-none ${activeTab === 'Debtor' ? 'text-primary' : 'text-secondary'}`}>₦{item.amount.toLocaleString()}</p>
-                              <p className="text-[9px] text-text-muted font-black mt-2 uppercase tracking-tighter opacity-60">Verified Balance</p>
                            </td>
-                           <td className="px-8 py-6 text-right">
-                               <div className="flex items-center justify-end gap-2 text-left">
+                           <td className="px-6 md:px-8 py-4 md:py-6 text-right">
+                               <div className="flex flex-col sm:flex-row items-center justify-end gap-2 text-left">
                                   {statusFilter === 'Pending' && (
                                      <button 
                                        onClick={() => handleSettle(item._id)}
-                                       className="px-4 py-2 bg-primary/10 text-primary border border-primary/20 rounded-md text-[9px] font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-sm"
+                                       className="w-full sm:w-auto px-4 py-2 bg-primary/10 text-primary border border-primary/20 rounded-md text-[9px] font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-sm"
                                      >
-                                        Mark Settled
+                                        Settle
                                      </button>
                                   )}
                                   <button 
@@ -277,11 +276,11 @@ const Debts = () => {
       {/* Record Entry Modal */}
       {showModal && (
          <div className="fixed inset-0 bg-accent/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-            <div className="bg-white border border-border-light rounded-3xl w-full max-w-2xl shadow-3xl animate-in zoom-in-95 duration-300 overflow-hidden text-left">
-               <div className="p-8 border-b border-border-light flex items-center justify-between bg-neutral/50">
+            <div className="bg-white border border-border-light rounded-2xl md:rounded-3xl w-full max-w-2xl shadow-3xl animate-in zoom-in-95 duration-300 overflow-hidden text-left">
+               <div className="p-6 md:p-8 border-b border-border-light flex items-center justify-between bg-neutral/50">
                   <div className="flex items-center gap-4">
-                     <div className={`w-12 h-12 ${activeTab === 'Debtor' ? 'bg-primary' : 'bg-secondary'} text-white rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 text-left`}>
-                        <UserPlus className="w-6 h-6" />
+                     <div className={`w-10 h-10 md:w-12 md:h-12 ${activeTab === 'Debtor' ? 'bg-primary' : 'bg-secondary'} text-white rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 text-left`}>
+                        <UserPlus className="w-5 h-5 md:w-6 md:h-6" />
                      </div>
                      <div className="text-left">
                         <h3 className="text-xl font-black text-text-main uppercase tracking-tighter leading-none">Record {activeTab}</h3>
@@ -293,11 +292,11 @@ const Debts = () => {
                   </button>
                </div>
 
-               <form onSubmit={handleSubmit} className="p-10 space-y-8 text-left">
+               <form onSubmit={handleSubmit} className="p-6 md:p-10 space-y-6 md:space-y-8 text-left">
                   <div className="space-y-6">
-                     <div className="grid grid-cols-2 gap-6">
-                        <div className="col-span-2">
-                           <label className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-3 block text-left">Subject Name (Person/Company)</label>
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="col-span-full">
+                           <label className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-3 block text-left">Subject Identity</label>
                            <div className="relative group">
                               <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted opacity-40 group-focus-within:text-primary transition-colors text-left" />
                               <input 
@@ -305,7 +304,7 @@ const Debts = () => {
                                 required
                                 value={newRecord.name}
                                 onChange={(e) => setNewRecord({...newRecord, name: e.target.value})}
-                                className="w-full pl-10 pr-4 py-3.5 bg-neutral border border-border-light rounded-xl text-sm font-black uppercase tracking-tight focus:bg-white focus:border-primary outline-none transition-all shadow-inner text-left" 
+                                className="w-full pl-10 pr-4 py-3 bg-neutral/30 border border-border-light rounded-xl text-sm font-black uppercase tracking-tight focus:bg-white focus:border-primary outline-none transition-all shadow-inner text-left" 
                                 placeholder="Enter identity..."
                               />
                            </div>
@@ -325,23 +324,23 @@ const Debts = () => {
                            </div>
                         </div>
                         <div>
-                           <label className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-3 block text-left">Record Date</label>
+                           <label className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-3 block text-left">Balance Date</label>
                            <div className="relative group">
                               <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted opacity-40 group-focus-within:text-primary transition-colors text-left" />
                               <input 
                                 type="date" 
                                 value={newRecord.date}
                                 onChange={(e) => setNewRecord({...newRecord, date: e.target.value})}
-                                className="w-full pl-10 pr-4 py-3.5 bg-neutral border border-border-light rounded-xl text-[11px] font-black uppercase tracking-tight focus:bg-white focus:border-primary outline-none transition-all shadow-inner text-left" 
+                                className="w-full pl-10 pr-4 py-3 bg-neutral/30 border border-border-light rounded-xl text-[11px] font-black uppercase tracking-tight focus:bg-white focus:border-primary outline-none transition-all shadow-inner text-left" 
                               />
                            </div>
                         </div>
-                        <div className="col-span-2">
-                           <label className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-3 block text-left">Transaction Memo / Description</label>
+                        <div className="col-span-full">
+                           <label className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-3 block text-left">Memo / Context</label>
                            <textarea 
                              value={newRecord.description}
                              onChange={(e) => setNewRecord({...newRecord, description: e.target.value})}
-                             className="w-full px-4 py-3.5 bg-neutral border border-border-light rounded-xl text-sm font-bold focus:bg-white focus:border-primary outline-none transition-all shadow-inner min-h-[100px] italic text-text-main text-left" 
+                             className="w-full px-4 py-3 bg-neutral/30 border border-border-light rounded-xl text-sm font-bold focus:bg-white focus:border-primary outline-none transition-all shadow-inner min-h-[80px] italic text-text-main text-left" 
                              placeholder="Provide context for this balance..."
                            />
                         </div>

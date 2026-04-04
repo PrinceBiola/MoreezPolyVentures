@@ -332,18 +332,18 @@ const Reports = () => {
       {/* Header Actions */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-2">
         <div className="flex items-center gap-6">
-          <h2 className="text-3xl font-black text-text-main tracking-tighter uppercase leading-none">Reports</h2>
+          <h2 className="text-2xl md:text-3xl font-black text-text-main tracking-tighter uppercase leading-none text-left">Reports</h2>
         </div>
-        <div className="flex gap-3">
-          <div className="relative">
+        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+          <div className="relative w-full sm:w-auto">
              <button 
                 onClick={() => setShowPeriodDropdown(!showPeriodDropdown)}
-                className="flex items-center gap-2 px-4 py-2 bg-white border border-border-light rounded-md text-[10px] font-black uppercase tracking-widest hover:bg-neutral transition-all"
+                className="w-full flex items-center justify-between sm:justify-start gap-2 px-4 py-2.5 bg-white border border-border-light rounded-md text-[10px] font-black uppercase tracking-widest hover:bg-neutral transition-all"
              >
                 {period} <ChevronDown className={`w-3 h-3 text-text-muted opacity-40 transition-transform ${showPeriodDropdown ? 'rotate-180' : ''}`} />
              </button>
              {showPeriodDropdown && (
-                <div className="absolute right-0 mt-2 w-48 bg-white border border-border-light rounded-md shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2">
+                <div className="absolute left-0 sm:right-0 mt-2 w-full sm:w-48 bg-white border border-border-light rounded-md shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2">
                    {['This Month', 'Last Month', 'This Year', 'Custom Range', 'All Time'].map(p => (
                       <button 
                          key={p}
@@ -358,38 +358,38 @@ const Reports = () => {
           </div>
 
           {period === 'Custom Range' && (
-            <div className="flex items-center gap-2 animate-in fade-in slide-in-from-left-2 duration-300">
-               <div className="relative group">
+            <div className="flex flex-col sm:flex-row items-center gap-2 animate-in fade-in slide-in-from-left-2 duration-300 w-full sm:w-auto">
+               <div className="relative group w-full sm:w-auto">
                   <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-text-muted opacity-50 group-focus-within:text-primary transition-colors" />
                   <input 
                     type="date" 
                     value={customStartDate} 
                     onChange={(e) => setCustomStartDate(e.target.value)}
-                    className="pl-8 pr-3 py-2 bg-white border border-border-light rounded-md text-[10px] font-black uppercase tracking-widest focus:border-primary outline-none transition-all shadow-sm"
+                    className="w-full sm:w-auto pl-8 pr-3 py-2 bg-white border border-border-light rounded-md text-[10px] font-black uppercase tracking-widest focus:border-primary outline-none transition-all shadow-sm"
                   />
                </div>
-               <span className="text-text-muted opacity-50 font-bold text-xs">to</span>
-               <div className="relative group">
+               <span className="text-text-muted opacity-50 font-bold text-[10px] uppercase">to</span>
+               <div className="relative group w-full sm:w-auto">
                   <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-text-muted opacity-50 group-focus-within:text-primary transition-colors" />
                   <input 
                     type="date" 
                     value={customEndDate} 
                     onChange={(e) => setCustomEndDate(e.target.value)}
-                    className="pl-8 pr-3 py-2 bg-white border border-border-light rounded-md text-[10px] font-black uppercase tracking-widest focus:border-primary outline-none transition-all shadow-sm"
+                    className="w-full sm:w-auto pl-8 pr-3 py-2 bg-white border border-border-light rounded-md text-[10px] font-black uppercase tracking-widest focus:border-primary outline-none transition-all shadow-sm"
                   />
                </div>
             </div>
           )}
-          <div className="flex relative">
+          <div className="flex relative w-full sm:w-auto">
              <button 
                 onClick={() => setShowReportDropdown(!showReportDropdown)}
-                className="flex items-center gap-2 px-6 py-2 bg-primary text-white rounded-l-md text-[10px] font-black uppercase tracking-widest hover:bg-accent transition-all border-r border-white/10"
+                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-2.5 bg-primary text-white rounded-l-md text-[10px] font-black uppercase tracking-widest hover:bg-accent transition-all border-r border-white/10"
              >
-                Download Report
+                Download
              </button>
              <button 
                 onClick={() => setShowReportDropdown(!showReportDropdown)}
-                className="px-3 bg-accent text-white rounded-r-md hover:opacity-90 transition-all"
+                className="px-3 bg-accent text-white rounded-r-md hover:opacity-90 transition-all flex items-center justify-center"
              >
                 <ChevronDown className={`w-4 h-4 transition-transform ${showReportDropdown ? 'rotate-180' : ''}`} />
              </button>
@@ -504,29 +504,31 @@ const Reports = () => {
             <div className="p-6 border-b border-border-light flex justify-between items-center bg-neutral/50">
                <h3 className="text-[10px] font-black text-text-main uppercase tracking-[0.2em]">Business Summary</h3>
             </div>
-            <table className="w-full text-left">
-               <thead>
-                  <tr className="border-b border-neutral">
-                     <th className="px-6 py-4 text-[9px] font-black text-text-muted uppercase tracking-widest">Product</th>
-                     <th className="px-6 py-4 text-[9px] font-black text-text-muted uppercase tracking-widest">Stock</th>
-                     <th className="px-6 py-4 text-[9px] font-black text-text-muted uppercase tracking-widest text-right">Revenue (Est)</th>
-                  </tr>
-               </thead>
-               <tbody className="divide-y divide-neutral text-[11px] font-bold">
-                  {data.business.slice(0, 4).map((p, i) => (
-                     <tr key={i}>
-                        <td className="px-6 py-4 text-text-main uppercase">{p.name}</td>
-                        <td className="px-6 py-4 text-text-muted">{p.currentStock} Units</td>
-                        <td className="px-6 py-4 text-right text-text-main tabular-nums">₦{(p.sellingPrice * p.currentStock || 0).toLocaleString()}</td>
-                     </tr>
-                  ))}
-                  <tr className="bg-neutral/50 font-black text-[12px]">
-                     <td className="px-6 py-4 uppercase text-text-main">Totals</td>
-                     <td className="px-6 py-4 text-text-muted">{businessTotalUnits} Units</td>
-                     <td className="px-6 py-4 text-right tabular-nums text-text-main">₦{businessTotalRevenue.toLocaleString()}</td>
-                  </tr>
-               </tbody>
-            </table>
+            <div className="overflow-x-auto no-scrollbar">
+              <table className="w-full text-left">
+                 <thead>
+                    <tr className="border-b border-neutral">
+                       <th className="px-6 py-4 text-[9px] font-black text-text-muted uppercase tracking-widest min-w-[150px]">Product</th>
+                       <th className="px-6 py-4 text-[9px] font-black text-text-muted uppercase tracking-widest min-w-[100px]">Stock</th>
+                       <th className="px-6 py-4 text-[9px] font-black text-text-muted uppercase tracking-widest text-right min-w-[120px]">Revenue (Est)</th>
+                    </tr>
+                 </thead>
+                 <tbody className="divide-y divide-neutral text-[11px] font-bold">
+                    {data.business.slice(0, 4).map((p, i) => (
+                       <tr key={i}>
+                          <td className="px-6 py-4 text-text-main uppercase">{p.name}</td>
+                          <td className="px-6 py-4 text-text-muted">{p.currentStock} Units</td>
+                          <td className="px-6 py-4 text-right text-text-main tabular-nums">₦{(p.sellingPrice * p.currentStock || 0).toLocaleString()}</td>
+                       </tr>
+                    ))}
+                    <tr className="bg-neutral/50 font-black text-[12px]">
+                       <td className="px-6 py-4 uppercase text-text-main">Totals</td>
+                       <td className="px-6 py-4 text-text-muted">{businessTotalUnits} Units</td>
+                       <td className="px-6 py-4 text-right tabular-nums text-text-main">₦{businessTotalRevenue.toLocaleString()}</td>
+                    </tr>
+                 </tbody>
+              </table>
+            </div>
          </div>
 
          {/* Transport Summary */}
@@ -534,29 +536,31 @@ const Reports = () => {
             <div className="p-6 border-b border-border-light flex justify-between items-center bg-neutral/50">
                <h3 className="text-[10px] font-black text-text-main uppercase tracking-[0.2em]">Transport Summary</h3>
             </div>
-            <table className="w-full text-left">
-               <thead>
-                  <tr className="border-b border-neutral">
-                     <th className="px-6 py-4 text-[9px] font-black text-text-muted uppercase tracking-widest">Vehicle</th>
-                     <th className="px-6 py-4 text-[9px] font-black text-text-muted uppercase tracking-widest">Trips</th>
-                     <th className="px-6 py-4 text-[9px] font-black text-text-muted uppercase tracking-widest text-right">Income</th>
-                  </tr>
-               </thead>
-               <tbody className="divide-y divide-neutral text-[11px] font-bold">
-                  {data.transport.slice(0, 4).map((p, i) => (
-                     <tr key={i}>
-                        <td className="px-6 py-4 text-text-main uppercase">{p.carId?.plateNumber || 'FLEET-NODE'}</td>
-                        <td className="px-6 py-4 text-text-muted">Record</td>
-                        <td className="px-6 py-4 text-right text-text-main tabular-nums">₦{(p.amount || 0).toLocaleString()}</td>
-                     </tr>
-                  ))}
-                  <tr className="bg-neutral/50 font-black text-[12px]">
-                     <td className="px-6 py-4 uppercase text-text-main">Totals</td>
-                     <td className="px-6 py-4 text-text-muted">{data.transport.length} Records</td>
-                     <td className="px-6 py-4 text-right tabular-nums text-text-main">₦{transportTotalIncome.toLocaleString()}</td>
-                  </tr>
-               </tbody>
-            </table>
+            <div className="overflow-x-auto no-scrollbar">
+              <table className="w-full text-left">
+                 <thead>
+                    <tr className="border-b border-neutral">
+                       <th className="px-6 py-4 text-[9px] font-black text-text-muted uppercase tracking-widest min-w-[150px]">Vehicle</th>
+                       <th className="px-6 py-4 text-[9px] font-black text-text-muted uppercase tracking-widest min-w-[100px]">Trips</th>
+                       <th className="px-6 py-4 text-[9px] font-black text-text-muted uppercase tracking-widest text-right min-w-[120px]">Income</th>
+                    </tr>
+                 </thead>
+                 <tbody className="divide-y divide-neutral text-[11px] font-bold">
+                    {data.transport.slice(0, 4).map((p, i) => (
+                       <tr key={i}>
+                          <td className="px-6 py-4 text-text-main uppercase">{p.carId?.plateNumber || 'FLEET-NODE'}</td>
+                          <td className="px-6 py-4 text-text-muted">Record</td>
+                          <td className="px-6 py-4 text-right text-text-main tabular-nums">₦{(p.amount || 0).toLocaleString()}</td>
+                       </tr>
+                    ))}
+                    <tr className="bg-neutral/50 font-black text-[12px]">
+                       <td className="px-6 py-4 uppercase text-text-main">Totals</td>
+                       <td className="px-6 py-4 text-text-muted">{data.transport.length} Records</td>
+                       <td className="px-6 py-4 text-right tabular-nums text-text-main">₦{transportTotalIncome.toLocaleString()}</td>
+                    </tr>
+                 </tbody>
+              </table>
+            </div>
          </div>
       </div>
     </div>

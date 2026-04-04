@@ -226,16 +226,16 @@ const Purchases = () => {
             <Loader size="lg" />
           </div>
         ) : purchases.length > 0 ? (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto no-scrollbar">
             <table className="w-full text-left border-collapse text-sm">
               <thead>
                 <tr className="border-b border-border-light bg-neutral/10">
-                  <th className="px-6 py-4 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none">Date & Time</th>
-                  <th className="px-6 py-4 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none">Shipment ID</th>
-                  <th className="px-6 py-4 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none">Product Asset</th>
-                  <th className="px-6 py-4 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-center">Tonnage (KG)</th>
-                  <th className="px-6 py-4 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-right">Total Cost (₦)</th>
-                  <th className="px-6 py-4 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-right">Actions</th>
+                  <th className="px-6 py-4 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none min-w-[120px]">Date & Time</th>
+                  <th className="px-6 py-4 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none min-w-[140px]">Shipment ID</th>
+                  <th className="px-6 py-4 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none min-w-[180px]">Product Asset</th>
+                  <th className="px-6 py-4 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-center min-w-[120px]">Tonnage (KG)</th>
+                  <th className="px-6 py-4 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-right min-w-[120px]">Total Cost (₦)</th>
+                  <th className="px-6 py-4 text-[10px] font-black text-text-muted uppercase tracking-widest leading-none text-right min-w-[100px]">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border-light">
@@ -335,17 +335,18 @@ const Purchases = () => {
                 </button>
              </div>
 
-             <div className="flex-1 overflow-y-auto p-8 pt-6 no-scrollbar bg-white/50">
+             <div className="flex-1 overflow-y-auto p-6 md:p-8 pt-6 no-scrollbar bg-white/50">
                 <div className="space-y-10">
                    <div className="space-y-6">
                       <div className="flex items-center gap-3">
                          <div className="w-1.5 h-4 bg-primary rounded-full"></div>
                          <h4 className="text-[10px] font-black text-text-main uppercase tracking-widest text-left">Shipment Identity</h4>
                       </div>
-                      <div className="grid grid-cols-2 gap-6 text-left">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
                          <div className="col-span-1">
                            <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest">Arrival Date</label>
                            <div className="relative">
+                              <input type="date" value={newPurchase.date} onChange={(e) => setNewPurchase({...newPurchase, date: e.target.value})} className="input-pro !py-3 bg-neutral border-border-light text-text-main font-black" required />
                            </div>
                          </div>
                          <div className="col-span-1">
@@ -393,7 +394,7 @@ const Purchases = () => {
                          <div className="w-1.5 h-4 bg-primary rounded-full"></div>
                          <h4 className="text-[10px] font-black text-text-main uppercase tracking-widest">Procurement Metrics</h4>
                       </div>
-                      <div className="grid grid-cols-3 gap-6">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                          <div className="col-span-1">
                            <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest">Qty (Bags)</label>
                            <input type="text" value={formatNumber(newPurchase.quantityPurchased)} onChange={(e) => setNewPurchase({...newPurchase, quantityPurchased: parseNumber(e.target.value)})} className="input-pro !py-3 bg-neutral border-border-light text-primary font-black" placeholder="0" required />
@@ -413,7 +414,7 @@ const Purchases = () => {
                 </div>
              </div>
 
-             <div className="p-8 border-t border-border-light bg-neutral/80 backdrop-blur-sm shrink-0 flex items-center justify-between gap-6 text-left">
+             <div className="p-6 md:p-8 border-t border-border-light bg-neutral/80 backdrop-blur-sm shrink-0 flex items-center justify-between gap-6 text-left">
                 <div className="hidden sm:block">
                    <p className="text-[9px] font-black text-text-muted uppercase tracking-[0.2em] mb-1">Total Transaction Value</p>
                    <p className="text-3xl font-black text-text-main tracking-tighter leading-none">₦{(Number(newPurchase.quantityPurchased || 0) * Number(newPurchase.costPerBag || 0)).toLocaleString()}</p>

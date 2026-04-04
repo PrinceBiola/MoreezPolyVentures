@@ -70,14 +70,14 @@ const Login = () => {
       {/* Right Panel - Login Form */}
       <div className="flex-1 flex items-center justify-center p-8 relative">
         {/* Corner Watermark */}
-        <div className="absolute bottom-12 right-12 text-8xl font-black text-primary select-none pointer-events-none opacity-5">
+        <div className="absolute bottom-12 right-12 text-6xl md:text-8xl font-black text-primary select-none pointer-events-none opacity-5">
           MP
         </div>
 
-        <div className="w-full max-w-md animate-in fade-in zoom-in-95 duration-700">
-          <div className="bg-white border border-border-light rounded-[2rem] p-12 shadow-3xl relative">
-            <h3 className="text-3xl font-black text-text-main tracking-tighter mb-2 leading-none">Account Login</h3>
-            <p className="text-sm text-text-muted font-bold mb-10 leading-relaxed">
+        <div className="w-full max-w-md animate-in fade-in zoom-in-95 duration-700 px-4 md:px-0">
+          <div className="bg-white border border-border-light rounded-[1.5rem] md:rounded-[2rem] p-8 md:p-12 shadow-3xl relative">
+            <h3 className="text-2xl md:text-3xl font-black text-text-main tracking-tighter mb-2 leading-none">Account Login</h3>
+            <p className="text-sm text-text-muted font-bold mb-8 md:min-h-[40px] leading-relaxed">
               Enter your credentials to access the management dashboard.
             </p>
 
@@ -126,8 +126,8 @@ const Login = () => {
                 </p>
               </div>
 
-              <Button type="submit" loading={loading} className="w-full !py-5 !bg-primary hover:!bg-accent !rounded-sm text-md shadow-xl shadow-primary/20">
-                <Lock className="w-4 h-4 mr-1 opacity-60" />
+              <Button type="submit" loading={loading} className="w-full !py-4 md:!py-5 !bg-primary hover:!bg-accent !rounded-sm text-sm md:text-md shadow-xl shadow-primary/20 flex items-center justify-center">
+                <Lock className="w-4 h-4 mr-2 opacity-60" />
                 Authenticate Access
               </Button>
             </form>
