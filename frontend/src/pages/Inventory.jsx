@@ -16,12 +16,14 @@ import {
   TrendingUp,
   Box,
   Truck,
-  Shield
+  Shield,
+  ShieldCheck
 } from 'lucide-react';
 import { businessService } from '../services/businessService';
 import { toast } from 'react-hot-toast';
 import Loader from '../components/ui/Loader';
 import EmptyState from '../components/ui/EmptyState';
+import Button from '../components/ui/Button';
 
 const Inventory = () => {
   const [products, setProducts] = useState([]);
