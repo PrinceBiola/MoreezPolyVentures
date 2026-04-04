@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { salesService } from '../services/salesService';
 import { businessService } from '../services/businessService';
 import { 
@@ -317,7 +318,7 @@ const Sales = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6">
-        <div className="flex gap-4 group cursor-pointer hover:bg-white hover:shadow-sm p-4 -m-4 rounded-md transition-all border border-transparent hover:border-border-light text-left">
+        <Link to="/reports" className="flex gap-4 group cursor-pointer hover:bg-white hover:shadow-sm p-4 -m-4 rounded-md transition-all border border-transparent hover:border-border-light text-left">
           <div className="w-10 h-10 bg-primary/10 text-primary rounded-md flex items-center justify-center shrink-0">
              <Info className="w-5 h-5" />
           </div>
@@ -326,9 +327,9 @@ const Sales = () => {
             <p className="text-xs text-text-muted font-bold mt-1 leading-relaxed opacity-70">Generate professional CSV or PDF reports for tax or inventory audits.</p>
             <p className="text-[10px] font-black text-primary uppercase tracking-widest mt-3 flex items-center gap-2">Go to Reports <ArrowRight className="w-3 h-3" /></p>
           </div>
-        </div>
+        </Link>
         
-        <div className="flex gap-4 group cursor-pointer hover:bg-white hover:shadow-sm p-4 -m-4 rounded-md transition-all border border-transparent hover:border-border-light text-left">
+        <Link to="/reports" className="flex gap-4 group cursor-pointer hover:bg-white hover:shadow-sm p-4 -m-4 rounded-md transition-all border border-transparent hover:border-border-light text-left">
           <div className="w-10 h-10 bg-secondary/10 text-secondary rounded-md flex items-center justify-center shrink-0">
              <Shield className="w-5 h-5" />
           </div>
@@ -337,7 +338,7 @@ const Sales = () => {
             <p className="text-xs text-text-muted font-bold mt-1 leading-relaxed opacity-70">Secure transaction history with Manager ID and timestamping.</p>
             <p className="text-[10px] font-black text-primary uppercase tracking-widest mt-3 flex items-center gap-2">View Audit Log <ArrowRight className="w-3 h-3" /></p>
           </div>
-        </div>
+        </Link>
       </div>
 
       {showModal && (
