@@ -48,13 +48,13 @@ const HelpModal = ({ onClose }) => {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-accent/60 backdrop-blur-sm animate-in fade-in transition-all text-left">
       <div 
-        className="bg-white w-full max-w-4xl max-h-[85vh] rounded-[2rem] shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-300"
+        className="bg-white w-full max-w-4xl max-h-[85vh] rounded-md shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-300"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="p-8 border-b border-border-light flex justify-between items-center bg-neutral/50">
           <div className="flex items-center gap-4 text-left">
-            <div className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center text-white shadow-lg shadow-primary/20">
+            <div className="w-12 h-12 bg-primary rounded-md flex items-center justify-center text-white shadow-lg shadow-primary/20">
                <HelpCircle className="w-6 h-6" />
             </div>
             <div className="text-left">

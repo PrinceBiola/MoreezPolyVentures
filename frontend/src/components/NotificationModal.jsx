@@ -26,7 +26,7 @@ const NotificationModal = ({ notifications, onClose, onMarkAsRead }) => {
     {/* Backdrop for mobile */}
     <div className="fixed inset-0 bg-accent/20 backdrop-blur-[2px] z-40 sm:hidden" onClick={onClose} />
     
-    <div className="fixed sm:absolute inset-x-4 sm:inset-x-auto top-24 sm:top-auto right-auto sm:right-0 mt-0 sm:mt-3 w-auto sm:w-80 bg-white border border-border-light rounded-2xl sm:rounded-md shadow-3xl sm:shadow-2xl z-50 sm:z-[100] animate-in slide-in-from-top-2 sm:zoom-in-95 duration-200 text-left">
+    <div className="fixed sm:absolute inset-x-4 sm:inset-x-auto top-24 sm:top-auto right-auto sm:right-0 mt-0 sm:mt-3 w-auto sm:w-80 bg-white border border-border-light rounded-md shadow-3xl sm:shadow-2xl z-50 sm:z-[100] animate-in slide-in-from-top-2 sm:zoom-in-95 duration-200 text-left">
       <div className="p-4 border-b border-border-light flex justify-between items-center bg-neutral/30">
         <h4 className="text-[10px] font-black text-text-main uppercase tracking-widest flex items-center gap-2">
           <Bell className="w-3.5 h-3.5" /> Recent Alerts
