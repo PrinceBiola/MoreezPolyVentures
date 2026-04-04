@@ -430,9 +430,9 @@ const Reports = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 bg-white border border-border-light rounded-md p-8 shadow-sm">
            <h3 className="text-sm font-black text-text-main tracking-tighter uppercase mb-8">Revenue Performance</h3>
-           <div className="h-[300px] min-h-[300px]">
+           <div className="h-[300px] md:h-[400px] w-full mt-4">
               <ResponsiveContainer width="100%" height="100%">
-                 <AreaChart data={chartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+                 <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                     <defs>
                       <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="#375534" stopOpacity={0.1}/>
@@ -514,13 +514,13 @@ const Reports = () => {
                     </tr>
                  </thead>
                  <tbody className="divide-y divide-neutral text-[11px] font-bold">
-                    {data.business.slice(0, 4).map((p, i) => (
-                       <tr key={i}>
-                          <td className="px-6 py-4 text-text-main uppercase">{p.name}</td>
-                          <td className="px-6 py-4 text-text-muted">{p.currentStock} Units</td>
-                          <td className="px-6 py-4 text-right text-text-main tabular-nums">₦{(p.sellingPrice * p.currentStock || 0).toLocaleString()}</td>
-                       </tr>
-                    ))}
+                     {data.business.slice(0, 4).map((p, i) => (
+                        <tr key={i} className="hover:bg-neutral/30 transition-colors">
+                           <td className="px-6 py-4 text-text-main uppercase">{p.name}</td>
+                           <td className="px-6 py-4 text-text-muted">{p.currentStock} Units</td>
+                           <td className="px-6 py-4 text-right text-text-main tabular-nums">₦{(p.sellingPrice * p.currentStock || 0).toLocaleString()}</td>
+                        </tr>
+                     ))}
                     <tr className="bg-neutral/50 font-black text-[12px]">
                        <td className="px-6 py-4 uppercase text-text-main">Totals</td>
                        <td className="px-6 py-4 text-text-muted">{businessTotalUnits} Units</td>
@@ -546,13 +546,13 @@ const Reports = () => {
                     </tr>
                  </thead>
                  <tbody className="divide-y divide-neutral text-[11px] font-bold">
-                    {data.transport.slice(0, 4).map((p, i) => (
-                       <tr key={i}>
-                          <td className="px-6 py-4 text-text-main uppercase">{p.carId?.plateNumber || 'FLEET-NODE'}</td>
-                          <td className="px-6 py-4 text-text-muted">Record</td>
-                          <td className="px-6 py-4 text-right text-text-main tabular-nums">₦{(p.amount || 0).toLocaleString()}</td>
-                       </tr>
-                    ))}
+                     {data.transport.slice(0, 4).map((p, i) => (
+                        <tr key={i} className="hover:bg-neutral/30 transition-colors">
+                           <td className="px-6 py-4 text-text-main uppercase">{p.carId?.plateNumber || 'FLEET-NODE'}</td>
+                           <td className="px-6 py-4 text-text-muted">Verified Entry</td>
+                           <td className="px-6 py-4 text-right text-text-main tabular-nums">₦{(p.amount || 0).toLocaleString()}</td>
+                        </tr>
+                     ))}
                     <tr className="bg-neutral/50 font-black text-[12px]">
                        <td className="px-6 py-4 uppercase text-text-main">Totals</td>
                        <td className="px-6 py-4 text-text-muted">{data.transport.length} Records</td>

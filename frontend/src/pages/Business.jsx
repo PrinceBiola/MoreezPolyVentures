@@ -156,11 +156,11 @@ const Business = () => {
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-border-light bg-neutral/10 text-[10px] uppercase font-black text-text-muted tracking-widest whitespace-nowrap">
-                  <th className="px-6 py-4 min-w-[200px]">Item Details</th>
-                  <th className="px-6 py-4 min-w-[100px]">Category</th>
-                  <th className="px-6 py-4 min-w-[120px]">Price</th>
-                  <th className="px-6 py-4 min-w-[140px]">Available Stock</th>
-                  <th className="px-6 py-4 text-right min-w-[100px]">Actions</th>
+                   <th className="px-6 py-4 min-w-[220px]">Item Details</th>
+                   <th className="px-6 py-4 min-w-[100px]">Category</th>
+                   <th className="px-6 py-4 min-w-[150px]">Price Metrics</th>
+                   <th className="px-6 py-4 min-w-[160px]">Available Stock</th>
+                   <th className="px-6 py-4 text-right min-w-[100px]">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border-light italic">
@@ -203,23 +203,23 @@ const Business = () => {
       {showModal && (
         <div className="fixed inset-0 bg-accent/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
              <form onSubmit={handleSubmit} className="bg-white border border-border-light rounded-2xl w-full max-w-2xl shadow-3xl animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh] overflow-hidden text-left">
-                {/* Header */}
-                <div className="p-8 border-b border-border-light flex items-center justify-between shrink-0 bg-neutral/50">
-                   <div className="flex items-center gap-4">
-                     <div className="w-12 h-12 bg-primary text-white rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 text-left">
-                       <Package className="w-6 h-6" />
-                     </div>
-                     <div className="text-left">
-                       <h3 className="text-xl font-black text-text-main uppercase tracking-tighter leading-none">{isEditing ? 'Edit Product' : 'Add New Product'}</h3>
-                       <p className="text-[9px] text-primary font-black tracking-[0.2em] uppercase mt-2">{isEditing ? 'Change product details' : 'Basic Product Information'}</p>
-                     </div>
-                   </div>
+                 {/* Header */}
+                 <div className="p-6 md:p-8 border-b border-border-light flex items-center justify-between shrink-0 bg-neutral/50">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 md:w-12 md:h-12 bg-primary text-white rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 text-left">
+                        <Package className="w-5 h-5 md:w-6 md:h-6" />
+                      </div>
+                      <div className="text-left">
+                        <h3 className="text-lg md:text-xl font-black text-text-main uppercase tracking-tighter leading-none">{isEditing ? 'Edit Product' : 'Add New Product'}</h3>
+                        <p className="text-[8px] md:text-[9px] text-primary font-black tracking-[0.2em] uppercase mt-1.5 md:mt-2">{isEditing ? 'Change product details' : 'Basic Product Information'}</p>
+                      </div>
+                    </div>
                    <button type="button" onClick={() => setShowModal(false)} className="w-10 h-10 rounded-full hover:bg-neutral flex items-center justify-center text-text-muted hover:text-text-main transition-all">
                       <Trash2 className="w-5 h-5" />
                    </button>
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-8 pt-6 no-scrollbar">
+                 <div className="flex-1 overflow-y-auto p-6 md:p-8 pt-6 no-scrollbar">
                    <div className="space-y-6">
                     {/* Section: Identity */}
                     <div className="space-y-6">

@@ -70,7 +70,7 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
       </div>
 
       {/* Control Actions */}
-      <div className="flex items-center justify-between sm:justify-end gap-4 md:gap-6 border-t sm:border-t-0 border-border-light pt-3 sm:pt-0">
+      <div className="flex items-center justify-end gap-3 md:gap-6 border-t sm:border-t-0 border-border-light pt-3 sm:pt-0 w-full sm:w-auto">
         <div className="flex items-center gap-2 md:gap-4 text-text-muted">
           <div className="relative" ref={notificationRef}>
             <button 

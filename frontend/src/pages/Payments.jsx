@@ -215,8 +215,8 @@ const Payments = () => {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-accent/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 text-left">
-          <div className="bg-white border border-border-light rounded-2xl w-full max-w-lg p-6 md:p-10 shadow-3xl animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 bg-accent/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white border border-border-light rounded-2xl w-full max-w-lg p-6 md:p-10 shadow-3xl animate-in zoom-in-95 duration-200 text-left">
              <h3 className="text-xl font-black text-text-main mb-8 uppercase tracking-tighter text-left leading-none">Record Payment</h3>
              <form onSubmit={handleRecordPayment} className="space-y-6">
                 <div>

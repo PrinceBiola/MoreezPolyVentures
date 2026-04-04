@@ -156,67 +156,82 @@ const Purchases = () => {
       </div>
 
       <div className="bg-white border border-border-light rounded-md shadow-sm overflow-hidden flex flex-col min-h-[500px]">
-        <div className="p-6 border-b border-border-light flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <h3 className="text-lg font-black text-text-main tracking-tighter uppercase">Purchase Ledger</h3>
-          <div className="flex w-full md:w-auto gap-3">
+        <div className="p-4 md:p-6 border-b border-border-light flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h3 className="text-xl md:text-2xl font-black text-text-main tracking-tighter uppercase leading-none">Purchases Ledger</h3>
+            <p className="text-[9px] md:text-[10px] text-text-muted font-bold uppercase tracking-widest mt-2 border-l-2 border-primary/20 pl-2">Procurement History & Records</p>
+          </div>
+          <div className="flex flex-col sm:flex-row w-full md:w-auto gap-3">
              <div className="relative flex-1 md:w-64">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted opacity-40" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted opacity-40" />
                 <input 
                   type="text" 
-                  placeholder="Filter shipments..." 
-                  className="w-full pl-10 pr-4 py-2 bg-neutral border border-border-light rounded-md text-xs font-bold focus:bg-white focus:border-primary outline-none transition-all" 
+                  placeholder="Search records..." 
+                  value={filters.search}
+                  onChange={(e) => setFilters({...filters, search: e.target.value})}
+                  className="w-full pl-10 pr-4 py-2 bg-neutral border border-border-light rounded-xl text-xs font-bold focus:bg-white focus:border-primary outline-none transition-all" 
                 />
              </div>
-             <Button 
-               variant={showFilters ? 'primary' : 'neutral'} 
-               icon={Filter} 
-               onClick={() => setShowFilters(!showFilters)}
-               className="!py-2 shadow-none"
-             >
-               {showFilters ? 'Hide Filters' : 'Filters'}
-             </Button>
-             <Button onClick={() => setShowModal(true)} icon={Plus}>New Purchase</Button>
+             <div className="flex gap-3 w-full sm:w-auto">
+                 <Button 
+                   variant={showFilters ? 'primary' : 'neutral'}
+                   onClick={() => setShowFilters(!showFilters)}
+                   icon={Filter}
+                   className="flex-1 sm:flex-none"
+                 >
+                   Filters
+                 </Button>
+                 <Button 
+                   onClick={() => setShowModal(true)}
+                   icon={Plus}
+                   className="flex-1 sm:flex-none shadow-lg shadow-primary/20"
+                 >
+                   New Purchase
+                 </Button>
+             </div>
           </div>
         </div>
 
         {showFilters && (
-          <div className="px-6 py-4 bg-neutral border-b border-border-light animate-in slide-in-from-top-2 duration-200">
-             <div className="flex flex-wrap items-end gap-4">
-                <div className="flex-1 min-w-[150px]">
-                   <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Start Date</label>
+          <div className="px-4 md:px-6 py-5 bg-neutral/80 border-b border-border-light animate-in slide-in-from-top-2 duration-200">
+             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-end">
+                <div className="space-y-2">
+                   <label className="text-[9px] font-black text-text-muted uppercase block tracking-widest text-left">Start Date</label>
                    <input 
                      type="date" 
                      value={filters.startDate}
                      onChange={(e) => setFilters({...filters, startDate: e.target.value})}
-                     className="w-full px-3 py-2 bg-white border border-border-light rounded-md text-xs font-bold focus:border-primary outline-none transition-all"
+                     className="w-full px-3 py-2 bg-white border border-border-light rounded-md text-xs font-bold focus:border-primary outline-none transition-all shadow-sm"
                    />
                 </div>
-                <div className="flex-1 min-w-[150px]">
-                   <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">End Date</label>
+                <div className="space-y-2">
+                   <label className="text-[9px] font-black text-text-muted uppercase block tracking-widest text-left">End Date</label>
                    <input 
                      type="date" 
                      value={filters.endDate}
                      onChange={(e) => setFilters({...filters, endDate: e.target.value})}
-                     className="w-full px-3 py-2 bg-white border border-border-light rounded-md text-xs font-bold focus:border-primary outline-none transition-all"
+                     className="w-full px-3 py-2 bg-white border border-border-light rounded-md text-xs font-bold focus:border-primary outline-none transition-all shadow-sm"
                    />
                 </div>
-                <div className="flex-1 min-w-[150px]">
-                   <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest text-left">Product</label>
+                <div className="space-y-2">
+                   <label className="text-[9px] font-black text-text-muted uppercase block tracking-widest text-left">Product</label>
                    <select 
                      value={filters.productId}
                      onChange={(e) => setFilters({...filters, productId: e.target.value})}
-                     className="w-full px-3 py-2 bg-white border border-border-light rounded-md text-xs font-bold focus:border-primary outline-none transition-all appearance-none"
+                     className="w-full px-3 py-2 bg-white border border-border-light rounded-md text-xs font-bold focus:border-primary outline-none transition-all appearance-none shadow-sm"
                    >
                      <option value="">All Products</option>
                      {products.map(p => <option key={p._id} value={p._id}>{p.name}</option>)}
                    </select>
                 </div>
-                <button 
-                  onClick={() => setFilters({ startDate: '', endDate: '', productId: '' })}
-                  className="px-4 py-2 text-[10px] font-black text-secondary uppercase tracking-widest hover:bg-secondary/10 rounded-md transition-all h-[34px]"
-                >
-                   Reset
-                </button>
+                <div className="sm:col-span-2 lg:col-span-1">
+                   <button 
+                     onClick={() => setFilters({ startDate: '', endDate: '', productId: '' })}
+                     className="w-full h-[38px] text-[10px] font-black text-secondary uppercase tracking-widest hover:bg-secondary/10 rounded-md transition-all border border-secondary/20"
+                   >
+                      Reset All
+                   </button>
+                </div>
              </div>
           </div>
         )}

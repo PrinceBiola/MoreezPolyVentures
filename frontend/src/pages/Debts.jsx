@@ -275,9 +275,9 @@ const Debts = () => {
 
       {/* Record Entry Modal */}
       {showModal && (
-         <div className="fixed inset-0 bg-accent/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-            <div className="bg-white border border-border-light rounded-2xl md:rounded-3xl w-full max-w-2xl shadow-3xl animate-in zoom-in-95 duration-300 overflow-hidden text-left">
-               <div className="p-6 md:p-8 border-b border-border-light flex items-center justify-between bg-neutral/50">
+          <div className="fixed inset-0 bg-accent/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+             <div className="bg-white border border-border-light rounded-2xl w-full max-w-2xl shadow-3xl animate-in zoom-in-95 duration-300 overflow-hidden text-left">
+                <div className="p-6 md:p-8 border-b border-border-light flex items-center justify-between shrink-0 bg-neutral/50">
                   <div className="flex items-center gap-4">
                      <div className={`w-10 h-10 md:w-12 md:h-12 ${activeTab === 'Debtor' ? 'bg-primary' : 'bg-secondary'} text-white rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 text-left`}>
                         <UserPlus className="w-5 h-5 md:w-6 md:h-6" />
@@ -292,7 +292,7 @@ const Debts = () => {
                   </button>
                </div>
 
-               <form onSubmit={handleSubmit} className="p-6 md:p-10 space-y-6 md:space-y-8 text-left">
+                <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 md:p-10 space-y-6 md:space-y-8 text-left no-scrollbar">
                   <div className="space-y-6">
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="col-span-full">
