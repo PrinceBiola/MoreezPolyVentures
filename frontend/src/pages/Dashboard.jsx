@@ -67,36 +67,84 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Stat Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard 
-          title="TOTAL SALES" 
-          value={`₦${metrics.totalSales.toLocaleString()}`} 
-          trend="+12.4%" 
-          isUp={true} 
-          icon={<div className="w-8 h-8 rounded-md bg-primary/10 text-primary flex items-center justify-center"><DollarSign className="w-4 h-4" /></div>}
-        />
-        <StatCard 
-          title="TOTAL EXPENSES" 
-          value={`₦${metrics.totalExpenses.toLocaleString()}`} 
-          trend="-2.1%" 
-          isUp={false} 
-          icon={<div className="w-8 h-8 rounded-md bg-secondary/10 text-secondary flex items-center justify-center"><TrendingDown className="w-4 h-4" /></div>}
-        />
-        <StatCard 
-          title="TRANSPORT INCOME" 
-          value={`₦${metrics.transportIncome.toLocaleString()}`} 
-          info={`Active ${fleet.active} units`} 
-          icon={<div className="w-8 h-8 rounded-md bg-primary/10 text-primary flex items-center justify-center"><Truck className="w-4 h-4" /></div>}
-        />
-        <StatCard 
-          title="NET PROFIT" 
-          value={`₦${metrics.netProfit.toLocaleString()}`} 
-          trend="+5.7%" 
-          isUp={true} 
-          highlight={true}
-          icon={<div className="w-8 h-8 rounded-md bg-[#375534] text-[#E3EED4] flex items-center justify-center"><TrendingUp className="w-4 h-4" /></div>}
-        />
+      {/* Global Banner */}
+      <div className="bg-[#0F2A1D] border border-primary/20 rounded-xl p-8 shadow-lg relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+        <div className="absolute -right-10 -top-10 text-[180px] font-black text-white/[0.02] leading-none pointer-events-none select-none">Σ</div>
+        <div className="relative z-10">
+          <h3 className="text-[10px] font-black text-secondary tracking-[0.2em] uppercase mb-2">Total Global Net Profit</h3>
+          <p className="text-4xl md:text-5xl font-black text-white tracking-tighter">₦{metrics.globalNetProfit.toLocaleString()}</p>
+        </div>
+        <div className="relative z-10 flex gap-4 md:gap-8">
+           <div className="flex flex-col">
+              <span className="text-[9px] font-black text-[#AEC3B0] tracking-widest uppercase mb-1">Total Fleet</span>
+              <span className="text-lg font-black text-white tracking-tighter">{fleet.total} units</span>
+           </div>
+           <div className="flex flex-col">
+              <span className="text-[9px] font-black text-[#AEC3B0] tracking-widest uppercase mb-1">Stock Value</span>
+              <span className="text-lg font-black text-white tracking-tighter">₦{metrics.stockValue.toLocaleString()}</span>
+           </div>
+        </div>
+      </div>
+
+      {/* Segregated Wings */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+         {/* Business Hub */}
+         <div className="space-y-4">
+            <h3 className="text-sm font-black text-text-main tracking-tighter uppercase relative flex items-center gap-3">
+               <div className="w-8 h-px bg-border-light flex-1"></div>
+               BUSINESS HUB
+               <div className="w-8 h-px bg-border-light flex-1"></div>
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+               <StatCard 
+                 title="Total Sales" 
+                 value={`₦${metrics.businessRevenue.toLocaleString()}`} 
+                 icon={<div className="w-8 h-8 rounded-md bg-primary/10 text-primary flex items-center justify-center"><DollarSign className="w-4 h-4" /></div>}
+               />
+               <StatCard 
+                 title="COGS & Expenses" 
+                 value={`₦${(metrics.businessCOGS + metrics.businessExpenses).toLocaleString()}`} 
+                 icon={<div className="w-8 h-8 rounded-md bg-secondary/10 text-secondary flex items-center justify-center"><TrendingDown className="w-4 h-4" /></div>}
+               />
+               <div className="sm:col-span-2">
+                 <StatCard 
+                   title="Business Net Profit" 
+                   value={`₦${metrics.businessNetProfit.toLocaleString()}`} 
+                   highlight={true}
+                   icon={<div className="w-8 h-8 rounded-md bg-[#375534] text-[#E3EED4] flex items-center justify-center"><TrendingUp className="w-4 h-4" /></div>}
+                 />
+               </div>
+            </div>
+         </div>
+
+         {/* Transport Hub */}
+         <div className="space-y-4">
+            <h3 className="text-sm font-black text-text-main tracking-tighter uppercase relative flex items-center gap-3">
+               <div className="w-8 h-px bg-border-light flex-1"></div>
+               TRANSPORT HUB
+               <div className="w-8 h-px bg-border-light flex-1"></div>
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+               <StatCard 
+                 title="Transport Income" 
+                 value={`₦${metrics.transportIncome.toLocaleString()}`} 
+                 icon={<div className="w-8 h-8 rounded-md bg-primary/10 text-primary flex items-center justify-center"><Truck className="w-4 h-4" /></div>}
+               />
+               <StatCard 
+                 title="Fleet Expenses" 
+                 value={`₦${metrics.transportExpenses.toLocaleString()}`} 
+                 icon={<div className="w-8 h-8 rounded-md bg-secondary/10 text-secondary flex items-center justify-center"><TrendingDown className="w-4 h-4" /></div>}
+               />
+               <div className="sm:col-span-2">
+                 <StatCard 
+                   title="Transport Net Profit" 
+                   value={`₦${metrics.transportNetProfit.toLocaleString()}`} 
+                   highlight={true}
+                   icon={<div className="w-8 h-8 rounded-md bg-[#375534] text-[#E3EED4] flex items-center justify-center"><TrendingUp className="w-4 h-4" /></div>}
+                 />
+               </div>
+            </div>
+         </div>
       </div>
 
       {/* Chart Section */}
@@ -108,12 +156,16 @@ const Dashboard = () => {
           </div>
           <div className="flex gap-4 md:gap-6">
             <div className="flex items-center gap-2">
-              <div className="w-2.5 h-2.5 rounded-full bg-primary" />
-              <span className="text-[9px] font-black text-text-muted uppercase tracking-widest">SALES</span>
+              <div className="w-2.5 h-2.5 rounded-full bg-[#375534]" />
+              <span className="text-[9px] font-black text-text-muted uppercase tracking-widest">BIZ REV</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-2.5 h-2.5 rounded-full bg-secondary" />
-              <span className="text-[9px] font-black text-text-muted uppercase tracking-widest">EXPENSES</span>
+              <div className="w-2.5 h-2.5 rounded-full bg-[#8DA991]" />
+              <span className="text-[9px] font-black text-text-muted uppercase tracking-widest">FLEET REV</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2.5 h-2.5 rounded-full bg-[#6B9071] opacity-60" />
+              <span className="text-[9px] font-black text-text-muted uppercase tracking-widest">TOTAL EXPENSES</span>
             </div>
           </div>
         </div>
@@ -137,8 +189,9 @@ const Dashboard = () => {
                 cursor={{ fill: '#E3EED4' }}
                 contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
               />
-              <Bar dataKey="sales" fill="#375534" radius={[4, 4, 0, 0]} barSize={12} />
-              <Bar dataKey="expenses" fill="#6B9071" opacity={0.6} radius={[4, 4, 0, 0]} barSize={12} />
+              <Bar dataKey="businessRevenue" stackId="a" fill="#375534" radius={[0, 0, 0, 0]} barSize={12} />
+              <Bar dataKey="transportRevenue" stackId="a" fill="#8DA991" radius={[4, 4, 0, 0]} barSize={12} />
+              <Bar dataKey="totalExpenses" fill="#6B9071" opacity={0.6} radius={[4, 4, 0, 0]} barSize={12} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -200,7 +253,10 @@ const Dashboard = () => {
                     <td className="!py-4 text-[11px] font-black text-text-muted">#EX-{4110 + idx}</td>
                     <td className="text-text-main font-bold">{expense.category}</td>
                     <td className="text-right font-black text-secondary">₦{expense.amount.toLocaleString()}</td>
-                    <td className="text-right text-[11px] font-black text-text-muted uppercase">{new Date(expense.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
+                    <td className="text-right text-[11px] font-black text-text-muted uppercase flex items-center justify-end gap-2">
+                      <span className={`px-1.5 py-0.5 rounded text-[7px] font-black tracking-widest uppercase ${expense.expenseType === 'Business' ? 'bg-primary/10 text-primary' : 'bg-neutral/80 text-text-main'}`}>{expense.expenseType}</span>
+                      {new Date(expense.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </td>
                   </tr>
                 ))}
               </tbody>

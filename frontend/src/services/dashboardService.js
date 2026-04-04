@@ -8,6 +8,13 @@ export const dashboardService = {
       throw error;
     }
   },
+  globalSearch: async (q) => {
+    try {
+      return await api.get('/dashboard/search', { params: { q } });
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 export default dashboardService;

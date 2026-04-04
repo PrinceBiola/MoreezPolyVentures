@@ -42,7 +42,8 @@ router.get('/stats', async (req, res) => {
     const [
       salesStats,
       paymentStats,
-      expenseStats,
+      businessExpenseStats,
+      transportExpenseStats,
       productStats,
       carStats,
       recentSales,
@@ -54,7 +55,11 @@ router.get('/stats', async (req, res) => {
         { $group: { _id: null, total: { $sum: "$amount" } } }
       ]),
       Expense.aggregate([
-        { $match: expenseDateFilter },
+        { $match: { ...expenseDateFilter, expenseType: 'Business' } },
+        { $group: { _id: null, total: { $sum: "$amount" } } }
+      ]),
+      Expense.aggregate([
+        { $match: { ...expenseDateFilter, expenseType: { $ne: 'Business' } } },
         { $group: { _id: null, total: { $sum: "$amount" } } }
       ]),
       Product.aggregate([
@@ -68,7 +73,7 @@ router.get('/stats', async (req, res) => {
     ]);
 
     // Calculate Sales and COGS from populated sales
-    const totalSales = salesStats.reduce((acc, s) => acc + (s.totalAmount || 0), 0);
+    const businessRevenue = salesStats.reduce((acc, s) => acc + (s.totalAmount || 0), 0);
     const businessCOGS = salesStats.reduce((acc, sale) => {
       const saleCOGS = (sale.items || []).reduce((itemAcc, item) => {
         const cost = item.productId?.costPrice || 0;
@@ -77,18 +82,26 @@ router.get('/stats', async (req, res) => {
       return acc + saleCOGS;
     }, 0);
 
+    const businessExpenses = businessExpenseStats[0]?.total || 0;
+    const businessNetProfit = businessRevenue - businessCOGS - businessExpenses;
+
     const transportIncome = paymentStats[0]?.total || 0;
-    const transportExpenses = expenseStats[0]?.total || 0;
-    const stockValue = productStats[0]?.totalStockValue || 0;
+    const transportExpenses = transportExpenseStats[0]?.total || 0;
+    const transportNetProfit = transportIncome - transportExpenses;
     
-    const totalExpenses = transportExpenses; 
-    const netProfit = (totalSales - businessCOGS) + (transportIncome - transportExpenses);
+    const stockValue = productStats[0]?.totalStockValue || 0;
+    const globalNetProfit = businessNetProfit + transportNetProfit;
 
     const metrics = {
-      totalSales,
-      totalExpenses,
-      netProfit,
-      transportIncome
+      businessRevenue,
+      businessCOGS,
+      businessExpenses,
+      businessNetProfit,
+      transportIncome,
+      transportExpenses,
+      transportNetProfit,
+      globalNetProfit,
+      stockValue
     };
 
     const fleet = {
@@ -101,10 +114,10 @@ router.get('/stats', async (req, res) => {
 
     // Cashflow Mock Data (kept as is for frontend consistency)
     const cashFlow = [
-      { name: 'May', sales: totalSales * 0.1, expenses: totalExpenses * 0.12 },
-      { name: 'Jun', sales: totalSales * 0.15, expenses: totalExpenses * 0.1 },
-      { name: 'Jul', sales: totalSales * 0.25, expenses: totalExpenses * 0.2 },
-      { name: 'Aug', sales: totalSales * 0.5, expenses: totalExpenses * 0.58 }, 
+      { name: 'May', businessRevenue: businessRevenue * 0.1, transportRevenue: transportIncome * 0.1, totalExpenses: (businessExpenses + transportExpenses) * 0.12 },
+      { name: 'Jun', businessRevenue: businessRevenue * 0.15, transportRevenue: transportIncome * 0.15, totalExpenses: (businessExpenses + transportExpenses) * 0.1 },
+      { name: 'Jul', businessRevenue: businessRevenue * 0.25, transportRevenue: transportIncome * 0.25, totalExpenses: (businessExpenses + transportExpenses) * 0.2 },
+      { name: 'Aug', businessRevenue: businessRevenue * 0.5, transportRevenue: transportIncome * 0.5, totalExpenses: (businessExpenses + transportExpenses) * 0.58 }, 
     ];
 
     res.json({
@@ -114,6 +127,25 @@ router.get('/stats', async (req, res) => {
       recentExpenses,
       cashFlow
     });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.get('/search', async (req, res) => {
+  try {
+    const { q } = req.query;
+    if (!q || q.length < 2) return res.json({ products: [], vehicles: [], sales: [] });
+
+    const regex = new RegExp(q, 'i');
+
+    const [products, vehicles, sales] = await Promise.all([
+      Product.find({ name: regex }).select('name currentStock grade').limit(5).lean(),
+      Car.find({ $or: [{ plateNumber: regex }, { driverName: regex }] }).select('plateNumber model driverName status').limit(5).lean(),
+      Sale.find({ customerName: regex }).select('customerName totalAmount date').limit(5).lean()
+    ]);
+
+    res.json({ products, vehicles, sales });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

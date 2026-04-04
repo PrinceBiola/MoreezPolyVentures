@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, HelpCircle, User, Bell, ChevronDown, Menu, X } from 'lucide-react';
+import { Search, HelpCircle, User, Bell, ChevronDown, Menu, X, Package, Truck, ShoppingCart } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import NotificationModal from './NotificationModal';
 import HelpModal from './HelpModal';
 import { notificationService } from '../services/notificationService';
+import { dashboardService } from '../services/dashboardService';
+import { useNavigate } from 'react-router-dom';
 
 const Header = ({ toggleSidebar, isSidebarOpen }) => {
   const { user } = useAuth();
@@ -11,6 +13,12 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
   const [showHelp, setShowHelp] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const notificationRef = useRef(null);
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState(null);
+  const [isSearching, setIsSearching] = useState(false);
+  const searchRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchNotifications();
@@ -39,9 +47,32 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
   useEffect(() => {
+    if (searchQuery.trim().length < 2) {
+      setSearchResults(null);
+      return;
+    }
+    const delayDebounceFn = setTimeout(async () => {
+      setIsSearching(true);
+      try {
+        const res = await dashboardService.globalSearch(searchQuery);
+        setSearchResults(res.data);
+      } catch (err) {
+        console.error('Search failed');
+      } finally {
+        setIsSearching(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery]);
+
+  useEffect(() => {
     const handleClickOutside = (event) => {
       if (notificationRef.current && !notificationRef.current.contains(event.target)) {
         setShowNotifications(false);
+      }
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setSearchResults(null);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -59,13 +90,88 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
           {isSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
         
-        <div className="relative group flex-1">
+        <div className="relative group flex-1" ref={searchRef}>
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted opacity-40 group-focus-within:text-primary transition-colors" />
           <input 
             type="text" 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onFocus={() => { if (searchQuery.length >= 2) setSearchResults(searchResults || { products: [], vehicles: [], sales: [] }) }}
             placeholder="Search ledger..." 
             className="w-full bg-neutral border border-border-light rounded-xl py-2 px-11 text-xs font-bold text-text-main focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all placeholder:text-text-muted/40 shadow-sm"
           />
+          
+          {searchResults && (
+            <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-border-light rounded-lg shadow-xl overflow-hidden z-50">
+               {isSearching ? (
+                 <div className="p-4 text-center text-[10px] uppercase font-black text-text-muted tracking-widest animate-pulse">Searching...</div>
+               ) : (
+                 <div className="max-h-96 overflow-y-auto no-scrollbar">
+                    {/* Products */}
+                    {searchResults.products?.length > 0 && (
+                      <div className="border-b border-border-light">
+                        <div className="px-4 py-2 bg-neutral/50 text-[9px] font-black uppercase text-text-muted tracking-widest flex items-center gap-2">
+                           <Package className="w-3 h-3" /> Inventory Matrix
+                        </div>
+                        {searchResults.products.map(p => (
+                          <div 
+                            key={p._id} 
+                            onClick={() => { navigate('/inventory'); setSearchResults(null); setSearchQuery(''); }}
+                            className="px-4 py-3 hover:bg-neutral cursor-pointer transition-colors"
+                          >
+                            <p className="text-xs font-black text-text-main uppercase">{p.name}</p>
+                            <p className="text-[10px] text-text-muted font-bold mt-0.5">{p.currentStock > 0 ? `${p.currentStock} units` : 'Out of stock'}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {/* Vehicles */}
+                    {searchResults.vehicles?.length > 0 && (
+                      <div className="border-b border-border-light">
+                        <div className="px-4 py-2 bg-neutral/50 text-[9px] font-black uppercase text-text-muted tracking-widest flex items-center gap-2">
+                           <Truck className="w-3 h-3" /> Fleet
+                        </div>
+                        {searchResults.vehicles.map(v => (
+                          <div 
+                            key={v._id} 
+                            onClick={() => { navigate(`/transport/${v._id}`); setSearchResults(null); setSearchQuery(''); }}
+                            className="px-4 py-3 hover:bg-neutral cursor-pointer transition-colors"
+                          >
+                            <p className="text-xs font-black text-text-main uppercase">{v.plateNumber}</p>
+                            <p className="text-[10px] text-text-muted font-bold mt-0.5">{v.driverName} • {v.status}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {/* Sales */}
+                    {searchResults.sales?.length > 0 && (
+                      <div className="border-b border-border-light">
+                        <div className="px-4 py-2 bg-neutral/50 text-[9px] font-black uppercase text-text-muted tracking-widest flex items-center gap-2">
+                           <ShoppingCart className="w-3 h-3" /> Recent Sales
+                        </div>
+                        {searchResults.sales.map(s => (
+                          <div 
+                            key={s._id} 
+                            onClick={() => { navigate('/sales'); setSearchResults(null); setSearchQuery(''); }}
+                            className="px-4 py-3 hover:bg-neutral cursor-pointer transition-colors flex justify-between items-center"
+                          >
+                            <div>
+                              <p className="text-xs font-black text-text-main uppercase">{s.customerName}</p>
+                              <p className="text-[10px] text-text-muted font-bold mt-0.5">{new Date(s.date).toLocaleDateString()}</p>
+                            </div>
+                            <p className="text-xs font-black text-secondary">₦{s.totalAmount?.toLocaleString()}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {(!searchResults.products?.length && !searchResults.vehicles?.length && !searchResults.sales?.length) && (
+                      <div className="p-6 text-center text-[10px] uppercase font-black text-text-muted tracking-widest">No matching records found.</div>
+                    )}
+                 </div>
+               )}
+            </div>
+          )}
         </div>
       </div>
 
