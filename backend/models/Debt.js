@@ -16,6 +16,18 @@ const debtSchema = new mongoose.Schema({
     required: true,
     min: 0
   },
+  amountPaid: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
+  paymentHistory: [
+    {
+      amount: { type: Number, required: true },
+      date: { type: Date, default: Date.now },
+      note: { type: String, trim: true }
+    }
+  ],
   description: {
     type: String,
     trim: true
@@ -29,7 +41,7 @@ const debtSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['Pending', 'Settled'],
+    enum: ['Pending', 'Partially Paid', 'Settled'],
     default: 'Pending',
     index: true
   }
