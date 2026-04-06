@@ -1,17 +1,46 @@
-import nodemailer from 'nodemailer';
 import Notification from '../models/Notification.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const transporter = nodemailer.createTransport({
-  host: process.env.BREVO_HOST || 'smtp-relay.brevo.com',
-  port: process.env.BREVO_PORT || 587,
-  auth: {
-    user: process.env.BREVO_USERNAME || process.env.SMTP_USER,
-    pass: process.env.BREVO_PASSWORD || process.env.SMTP_PASS,
-  },
-});
+const BREVO_API_URL = 'https://api.brevo.com/v3/smtp/email';
+const BREVO_API_KEY = process.env.BREVO_APIKEY;
+const SENDER_EMAIL = process.env.SMTP_FROM || 'no-reply@moreezpolyventures.com';
+const SENDER_NAME = 'Moreez Poly';
+
+/**
+ * Send an email via Brevo HTTP API (bypasses SMTP port blocks on Render)
+ */
+const sendEmail = async ({ to, subject, html }) => {
+  if (!BREVO_API_KEY) {
+    console.error('BREVO_APIKEY is not set in environment variables');
+    return;
+  }
+
+  const body = {
+    sender: { name: SENDER_NAME, email: SENDER_EMAIL },
+    to: [{ email: to }],
+    subject,
+    htmlContent: html,
+  };
+
+  const res = await fetch(BREVO_API_URL, {
+    method: 'POST',
+    headers: {
+      'accept': 'application/json',
+      'api-key': BREVO_API_KEY,
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    const errorBody = await res.text();
+    throw new Error(`Brevo API error ${res.status}: ${errorBody}`);
+  }
+
+  return res.json();
+};
 
 export const notificationService = {
   /**
@@ -34,11 +63,11 @@ export const notificationService = {
     const adminEmail = process.env.ADMIN_EMAIL || process.env.SMTP_FROM;
     if (!adminEmail) return;
 
-    const mailOptions = {
-      from: process.env.SMTP_FROM,
-      to: adminEmail,
-      subject: `LOW STOCK ALERT: ${product.name}`,
-      html: `
+    try {
+      await sendEmail({
+        to: adminEmail,
+        subject: `LOW STOCK ALERT: ${product.name}`,
+        html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #f1f5f9; border-radius: 8px; overflow: hidden;">
           <div style="background-color: #ef4444; padding: 20px; text-align: center;">
             <h1 style="color: white; margin: 0; font-size: 20px; text-transform: uppercase; letter-spacing: 0.1em;">Low Stock Alert</h1>
@@ -64,10 +93,7 @@ export const notificationService = {
           </div>
         </div>
       `,
-    };
-
-    try {
-      await transporter.sendMail(mailOptions);
+      });
       console.log(`Low stock email sent for ${product.name}`);
     } catch (error) {
       console.error('Error sending email:', error);
@@ -81,11 +107,11 @@ export const notificationService = {
     const userEmail = user.email;
     if (!userEmail) return;
 
-    const mailOptions = {
-      from: process.env.SMTP_FROM,
-      to: userEmail,
-      subject: 'New Login Detected - Moreez Poly',
-      html: `
+    try {
+      await sendEmail({
+        to: userEmail,
+        subject: 'New Login Detected - Moreez Poly',
+        html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #f1f5f9; border-radius: 8px; overflow: hidden;">
           <div style="background-color: #0f172a; padding: 20px; text-align: center;">
             <h1 style="color: white; margin: 0; font-size: 20px; text-transform: uppercase; letter-spacing: 0.1em;">Security Alert</h1>
@@ -105,10 +131,7 @@ export const notificationService = {
           </div>
         </div>
       `,
-    };
-
-    try {
-      await transporter.sendMail(mailOptions);
+      });
       console.log(`Login notification email sent to ${userEmail}`);
     } catch (error) {
       console.error('Error sending login email:', error);
@@ -122,11 +145,11 @@ export const notificationService = {
     const userEmail = user.email;
     if (!userEmail) return;
 
-    const mailOptions = {
-      from: process.env.SMTP_FROM,
-      to: userEmail,
-      subject: 'Password Changed Successfully - Moreez Poly',
-      html: `
+    try {
+      await sendEmail({
+        to: userEmail,
+        subject: 'Password Changed Successfully - Moreez Poly',
+        html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #f1f5f9; border-radius: 8px; overflow: hidden;">
           <div style="background-color: #0f172a; padding: 20px; text-align: center;">
             <h1 style="color: white; margin: 0; font-size: 20px; text-transform: uppercase; letter-spacing: 0.1em;">Security Update</h1>
@@ -146,10 +169,7 @@ export const notificationService = {
           </div>
         </div>
       `,
-    };
-
-    try {
-      await transporter.sendMail(mailOptions);
+      });
       console.log(`Password change confirmation email sent to ${userEmail}`);
     } catch (error) {
       console.error('Error sending password change email:', error);
@@ -163,11 +183,11 @@ export const notificationService = {
     const userEmail = user.email;
     if (!userEmail) return;
 
-    const mailOptions = {
-      from: process.env.SMTP_FROM,
-      to: userEmail,
-      subject: 'Password Reset Request - Moreez Poly',
-      html: `
+    try {
+      await sendEmail({
+        to: userEmail,
+        subject: 'Password Reset Request - Moreez Poly',
+        html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #f1f5f9; border-radius: 8px; overflow: hidden;">
           <div style="background-color: #0f172a; padding: 20px; text-align: center;">
             <h1 style="color: white; margin: 0; font-size: 20px; text-transform: uppercase; letter-spacing: 0.1em;">Security Request</h1>
@@ -187,10 +207,7 @@ export const notificationService = {
           </div>
         </div>
       `,
-    };
-
-    try {
-      await transporter.sendMail(mailOptions);
+      });
       console.log(`Password reset email sent to ${userEmail}`);
     } catch (error) {
       console.error('Error sending password reset email:', error);
@@ -227,8 +244,7 @@ export const notificationService = {
       const users = await User.find({ 'settings.notifications.driverReminders': true });
       
       for (const user of users) {
-        const mailOptions = {
-          from: process.env.SMTP_FROM,
+        await sendEmail({
           to: user.email,
           subject: 'Weekly Driver Settlement Manifest',
           html: `
@@ -253,9 +269,7 @@ export const notificationService = {
               </div>
             </div>
           `,
-        };
-
-        await transporter.sendMail(mailOptions);
+        });
       }
       console.log(`Weekly reminders sent successfully to ${users.length} users.`);
     } catch (error) {
