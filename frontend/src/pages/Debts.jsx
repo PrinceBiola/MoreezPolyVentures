@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { debtService } from '../services/debtService';
 import { exportSingleDebtToPDF } from '../utils/pdfExport';
+import { exportDebtsToCSV } from '../utils/csvExport';
 import { 
   Users, 
   UserPlus, 
@@ -37,6 +38,7 @@ const Debts = () => {
   const [statusFilter, setStatusFilter] = useState('Active');
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [historyData, setHistoryData] = useState(null);
+  const [exporting, setExporting] = useState(false);
   
   const [newRecord, setNewRecord] = useState({
     type: 'Debtor',
@@ -132,6 +134,19 @@ const Debts = () => {
     }
   };
 
+  const handleExportAll = async () => {
+    setExporting(true);
+    try {
+      const response = await debtService.getDebts({});
+      exportDebtsToCSV(response.data.data, 'debt_ledger');
+      toast.success('CSV export ready');
+    } catch (err) {
+      toast.error('Export failed');
+    } finally {
+      setExporting(false);
+    }
+  };
+
   const totalOutstanding = debts.reduce((acc, curr) => {
     if (curr.status === 'Settled') return acc;
     return acc + (curr.amount - (curr.amountPaid || 0));
@@ -146,7 +161,9 @@ const Debts = () => {
           <p className="text-[9px] md:text-[10px] text-text-muted font-bold uppercase tracking-widest mt-2 md:mt-3 border-l-2 border-primary/20 pl-2">Balance Ledger & Collections</p>
         </div>
         <div className="flex gap-3 w-full md:w-auto">
+        <Button onClick={handleExportAll} disabled={exporting} className="w-full md:w-auto">{exporting ? 'Exporting...' : 'Export CSV'}</Button>
            <Button icon={Plus} onClick={() => { setNewRecord({...newRecord, type: activeTab}); setShowModal(true); }} className="w-full md:w-auto">Record Balance</Button>
+           
         </div>
       </div>
 

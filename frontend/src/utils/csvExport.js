@@ -43,3 +43,43 @@ export const exportToCSV = (data, filename, headers = []) => {
     document.body.removeChild(link);
   }
 };
+
+export const exportDebtsToCSV = (debts, filename = 'debt_ledger') => {
+  if (!debts || !debts.length) {
+    console.error('No debits or credits to export');
+    return;
+  }
+
+  const rows = debts.map((debt) => {
+    const lastPayment = debt.paymentHistory?.length ? debt.paymentHistory[debt.paymentHistory.length - 1] : null;
+    return {
+      Type: debt.type,
+      Direction: debt.type === 'Debtor' ? 'They owe me' : 'I owe them',
+      Name: debt.name,
+      Status: debt.status,
+      Amount: debt.amount ?? 0,
+      AmountPaid: debt.amountPaid ?? 0,
+      RemainingAmount: (debt.amount ?? 0) - (debt.amountPaid ?? 0),
+      Date: debt.date ? new Date(debt.date).toLocaleDateString() : '',
+      Description: debt.description || '',
+      LastPaymentDate: lastPayment?.date ? new Date(lastPayment.date).toLocaleDateString() : '',
+      LastPaymentAmount: lastPayment?.amount ?? '',
+      LastPaymentNote: lastPayment?.note || ''
+    };
+  });
+
+  exportToCSV(rows, filename, [
+    'Type',
+    'Direction',
+    'Name',
+    'Status',
+    'Amount',
+    'AmountPaid',
+    'RemainingAmount',
+    'Date',
+    'Description',
+    'LastPaymentDate',
+    'LastPaymentAmount',
+    'LastPaymentNote'
+  ]);
+};
