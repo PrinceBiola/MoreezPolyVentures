@@ -77,7 +77,9 @@ router.get('/stats', async (req, res) => {
     const businessCOGS = salesStats.reduce((acc, sale) => {
       const saleCOGS = (sale.items || []).reduce((itemAcc, item) => {
         const cost = item.productId?.costPrice || 0;
-        return itemAcc + (Number(item.quantitySold || 0) * cost);
+        // Use qtyKg if available (since costPrice is per kg), fallback to quantitySold
+        const actualQuantity = item.qtyKg || item.quantitySold || 0;
+        return itemAcc + (Number(actualQuantity) * cost);
       }, 0);
       return acc + saleCOGS;
     }, 0);
