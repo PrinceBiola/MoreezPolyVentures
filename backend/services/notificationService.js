@@ -5,10 +5,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const transporter = nodemailer.createTransport({
-  service: 'yahoo', // Based on existing .env settings
+  host: process.env.MAILGUN_HOST || 'smtp.mailgun.org',
+  port: process.env.MAILGUN_PORT || 587,
   auth: {
-    user: process.env.YAHOO_EMAIL_USER || process.env.SMTP_USER,
-    pass: process.env.YAHOO_EMAIL_APP_PASSWORD || process.env.SMTP_PASS,
+    user: process.env.MAILGUN_USERNAME || process.env.SMTP_USER,
+    pass: process.env.MAILGUN_PASSWORD || process.env.SMTP_PASS,
   },
 });
 
@@ -30,11 +31,11 @@ export const notificationService = {
    * Send a low stock email alert
    */
   sendLowStockEmail: async (product) => {
-    const adminEmail = process.env.ADMIN_EMAIL || process.env.YAHOO_EMAIL_USER;
+    const adminEmail = process.env.ADMIN_EMAIL || process.env.MAILGUN_USERNAME;
     if (!adminEmail) return;
 
     const mailOptions = {
-      from: process.env.SMTP_FROM || `"Moreez Poly" <${process.env.YAHOO_EMAIL_USER}>`,
+      from: process.env.SMTP_FROM || `"Moreez Poly" <${process.env.MAILGUN_USERNAME}>`,
       to: adminEmail,
       subject: `LOW STOCK ALERT: ${product.name}`,
       html: `
@@ -81,7 +82,7 @@ export const notificationService = {
     if (!userEmail) return;
 
     const mailOptions = {
-      from: `"Moreez Security" <${process.env.YAHOO_EMAIL_USER}>`,
+      from: `"Moreez Security" <${process.env.MAILGUN_USERNAME}>`,
       to: userEmail,
       subject: 'New Login Detected - Moreez Poly',
       html: `
@@ -122,7 +123,7 @@ export const notificationService = {
     if (!userEmail) return;
 
     const mailOptions = {
-      from: `"Moreez Security" <${process.env.YAHOO_EMAIL_USER}>`,
+      from: `"Moreez Security" <${process.env.MAILGUN_USERNAME}>`,
       to: userEmail,
       subject: 'Password Changed Successfully - Moreez Poly',
       html: `
@@ -163,7 +164,7 @@ export const notificationService = {
     if (!userEmail) return;
 
     const mailOptions = {
-      from: `"Moreez Security" <${process.env.YAHOO_EMAIL_USER}>`,
+      from: `"Moreez Security" <${process.env.MAILGUN_USERNAME}>`,
       to: userEmail,
       subject: 'Password Reset Request - Moreez Poly',
       html: `
@@ -227,7 +228,7 @@ export const notificationService = {
       
       for (const user of users) {
         const mailOptions = {
-          from: `"Moreez Reports" <${process.env.YAHOO_EMAIL_USER}>`,
+          from: `"Moreez Reports" <${process.env.MAILGUN_USERNAME}>`,
           to: user.email,
           subject: 'Weekly Driver Settlement Manifest',
           html: `

@@ -140,8 +140,8 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       {/* Brand Header */}
       <div className="p-8">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center shadow-lg shadow-primary/20">
-            <ShieldCheck className="text-white w-5 h-5" />
+          <div className="w-8 h-8 bg-neutral rounded-md flex items-center justify-center shadow-lg shadow-primary/10">
+            <img src="/logo-icon.svg" alt="Logo" className="w-6 h-6 object-contain" />
           </div>
           <div>
             <h1 className="text-sm font-black text-text-main leading-none tracking-tighter uppercase">Moreez Poly</h1>

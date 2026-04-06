@@ -46,7 +46,7 @@ const Login = () => {
         <div className="relative z-10 transition-all duration-700 animate-in slide-in-from-left-10">
           <div className="flex items-center gap-3 mb-12">
             <div className="w-10 h-10 bg-white rounded-sm flex items-center justify-center shadow-lg overflow-hidden">
-              <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
+              <img src="/logo-icon.svg" alt="Moreez Poly" className="w-full h-full object-contain" />
             </div>
             <h1 className="text-xl font-black text-white tracking-tighter uppercase">Moreez Poly</h1>
           </div>
@@ -77,7 +77,7 @@ const Login = () => {
         {/* Mobile Branding (Hidden on lg screens) */}
         <div className="lg:hidden flex flex-col items-center gap-3 mb-8 animate-in slide-in-from-top-10">
           <div className="w-12 h-12 bg-accent rounded-sm flex items-center justify-center shadow-lg overflow-hidden">
-             <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
+             <img src="/logo-icon.svg" alt="Moreez Poly" className="w-full h-full object-contain" />
           </div>
           <h1 className="text-xl font-black text-text-main tracking-tighter uppercase">Moreez Poly</h1>
         </div>

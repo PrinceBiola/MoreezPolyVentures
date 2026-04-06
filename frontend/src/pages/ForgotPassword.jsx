@@ -29,7 +29,7 @@ const ForgotPassword = () => {
       <div className="pt-12 flex justify-center animate-in fade-in duration-700">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-white border border-border-light rounded-sm flex items-center justify-center shadow-sm overflow-hidden">
-            <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
+            <img src="/logo-full.svg" alt="Moreez Poly" className="w-full h-full object-contain" />
           </div>
           <h1 className="text-sm font-black text-text-main tracking-tighter uppercase">Moreez Poly</h1>
         </div>
