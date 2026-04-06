@@ -1,6 +1,9 @@
 {
+  "id": "/",
   "name": "Moreez Poly",
   "short_name": "Moreez Poly",
+  "description": "Moreez Poly Ventures Dashboard",
+  "categories": ["business", "finance", "productivity"],
   "start_url": "/",
   "display": "standalone",
   "theme_color": "#1e293b",
@@ -9,12 +12,14 @@
     {
       "src": "/favicon.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "/favicon.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
