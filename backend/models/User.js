@@ -43,15 +43,14 @@ const userSchema = new mongoose.Schema({
 });
 
 // Hash password before saving
-userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
+userSchema.pre('save', async function() {
+  if (!this.isModified('password')) return;
   
   this.password = await bcrypt.hash(this.password, 10);
   
   if (!this.isNew) {
     this.passwordChangedAt = Date.now() - 1000;
   }
-  next();
 });
 
 // Compare password method
