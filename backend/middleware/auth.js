@@ -28,6 +28,11 @@ const protect = async (req, res, next) => {
         return res.status(401).json({ message: 'Not authorized, user not found' });
       }
 
+      // Check if user changed password after the token was issued
+      if (req.user.changedPasswordAfter && req.user.changedPasswordAfter(decoded.iat)) {
+        return res.status(401).json({ message: 'User recently changed password! Please log in again.' });
+      }
+
       return next();
     } catch (error) {
       console.error('⚠️ JWT Verification Error:', error.message);

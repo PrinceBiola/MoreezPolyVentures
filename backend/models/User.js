@@ -38,18 +38,35 @@ const userSchema = new mongoose.Schema({
     default: Date.now
   },
   resetPasswordToken: String,
-  resetPasswordExpire: Date
+  resetPasswordExpire: Date,
+  passwordChangedAt: Date
 });
 
 // Hash password before saving
-userSchema.pre('save', async function() {
-  if (!this.isModified('password')) return;
+userSchema.pre('save', async function(next) {
+  if (!this.isModified('password')) return next();
+  
   this.password = await bcrypt.hash(this.password, 10);
+  
+  if (!this.isNew) {
+    this.passwordChangedAt = Date.now() - 1000;
+  }
+  next();
 });
 
 // Compare password method
 userSchema.methods.comparePassword = async function(candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
+};
+
+// Check if password was changed after token issue
+userSchema.methods.changedPasswordAfter = function(JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
+    return JWTTimestamp < changedTimestamp;
+  }
+  // False means NOT changed
+  return false;
 };
 
 // Generate and hash password token

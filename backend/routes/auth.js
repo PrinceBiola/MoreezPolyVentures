@@ -9,7 +9,7 @@ const router = express.Router();
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET || 'secret_polyventure_key', {
-    expiresIn: '30d'
+    expiresIn: '7d'
   });
 };
 
