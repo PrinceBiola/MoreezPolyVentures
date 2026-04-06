@@ -5,7 +5,7 @@ const purchaseSchema = new mongoose.Schema({
   productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
   quantityPurchased: { type: Number, required: true }, // bags
   qtyKg: { type: Number }, // calculated or stored
-  costPerBag: { type: Number, required: true },
+  costPerKg: { type: Number, required: true },
   status: { type: String, default: 'Active' }, // Active, Voided
 }, { timestamps: true });
 

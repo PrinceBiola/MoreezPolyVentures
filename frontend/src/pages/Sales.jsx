@@ -107,7 +107,9 @@ const Sales = () => {
   };
 
   const totalPayable = newSale.items.reduce((acc, item) => {
-    return acc + (Number(item.quantitySold || 0) * Number(item.salesPrice || 0));
+    const prodInfo = products.find(p => p._id === item.productId);
+    const kg = prodInfo ? (Number(item.quantitySold || 0) * (prodInfo.weightKg || 1)) : 0;
+    return acc + (kg * Number(item.salesPrice || 0));
   }, 0);
 
   const handleSubmit = async (e) => {
@@ -437,8 +439,8 @@ const Sales = () => {
                                    </div>
                                 </div>
                                 <div className="col-span-full sm:col-span-3">
-                                   <label className="text-[9px] font-black text-text-muted uppercase tracking-widest mb-2 block text-left sm:hidden">Price/Bag (₦)</label>
-                                   {idx === 0 && <label className="text-[9px] font-black text-text-muted uppercase tracking-widest mb-2 hidden sm:block text-right">Price/Bag (₦)</label>}
+                                   <label className="text-[9px] font-black text-text-muted uppercase tracking-widest mb-2 block text-left sm:hidden">Price/KG (₦)</label>
+                                   {idx === 0 && <label className="text-[9px] font-black text-text-muted uppercase tracking-widest mb-2 hidden sm:block text-right">Price/KG (₦)</label>}
                                    <input type="text" value={formatNumber(item.salesPrice)} onChange={(e) => updateItem(idx, 'salesPrice', parseNumber(e.target.value))} className="input-pro !text-xs !py-3 bg-primary/10 border-primary/20 text-right font-black text-primary focus:bg-white outline-none" placeholder="0.00" />
                                 </div>
                                 <div className="col-span-full sm:col-span-1 flex items-center justify-end sm:justify-center pb-2">
@@ -539,12 +541,12 @@ const Sales = () => {
                                    <p className="text-xs font-black text-text-main">{item.quantitySold} Bags <span className="text-[10px] text-text-muted font-bold">/ {item.qtyKg?.toLocaleString()}kg</span></p>
                                 </div>
                                 <div>
-                                   <p className="text-[8px] font-black text-text-muted uppercase tracking-widest mb-0.5">Unit Price</p>
+                                   <p className="text-[8px] font-black text-text-muted uppercase tracking-widest mb-0.5">Unit Price (Per KG)</p>
                                    <p className="text-xs font-black text-primary">₦{item.salesPrice?.toLocaleString()}</p>
                                 </div>
                                 <div className="min-w-[80px]">
                                    <p className="text-[8px] font-black text-text-muted uppercase tracking-widest mb-0.5">Subtotal</p>
-                                   <p className="text-xs font-black text-text-main">₦{(item.quantitySold * item.salesPrice).toLocaleString()}</p>
+                                   <p className="text-xs font-black text-text-main">₦{((item.qtyKg || 0) * item.salesPrice).toLocaleString()}</p>
                                 </div>
                              </div>
                           </div>

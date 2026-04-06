@@ -156,6 +156,47 @@ export const notificationService = {
   },
 
   /**
+   * Send a password reset email
+   */
+  sendPasswordResetEmail: async (user, resetUrl) => {
+    const userEmail = user.email;
+    if (!userEmail) return;
+
+    const mailOptions = {
+      from: `"Moreez Security" <${process.env.YAHOO_EMAIL_USER}>`,
+      to: userEmail,
+      subject: 'Password Reset Request - Moreez Poly',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #f1f5f9; border-radius: 8px; overflow: hidden;">
+          <div style="background-color: #0f172a; padding: 20px; text-align: center;">
+            <h1 style="color: white; margin: 0; font-size: 20px; text-transform: uppercase; letter-spacing: 0.1em;">Security Request</h1>
+          </div>
+          <div style="padding: 30px; background-color: white;">
+            <p style="font-size: 16px; color: #1e293b; font-weight: bold;">Hello ${user.name},</p>
+            <p style="font-size: 14px; color: #64748b; line-height: 1.6;">You are receiving this email because a password reset request was submitted for your account.</p>
+            
+            <div style="background-color: #f8fafc; padding: 20px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #f59e0b; text-align: center;">
+              <a href="${resetUrl}" style="display: inline-block; background-color: #0f172a; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px;">Reset Your Password</a>
+            </div>
+            
+            <p style="font-size: 14px; color: #64748b; line-height: 1.6;">If you did not request this, please ignore this email and your password will remain unchanged. This link is valid for 10 minutes.</p>
+          </div>
+          <div style="background-color: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #f1f5f9;">
+            <p style="margin: 0; font-size: 11px; color: #94a3b8; text-transform: uppercase; font-weight: bold;">Moreez Poly Security Protocols</p>
+          </div>
+        </div>
+      `,
+    };
+
+    try {
+      await transporter.sendMail(mailOptions);
+      console.log(`Password reset email sent to ${userEmail}`);
+    } catch (error) {
+      console.error('Error sending password reset email:', error);
+    }
+  },
+
+  /**
    * Send weekly driver payment reminders to users who have it enabled
    */
   sendWeeklyDriverReminders: async (customData) => {

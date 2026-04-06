@@ -16,6 +16,7 @@ const BusinessExpenses = lazy(() => import('./pages/BusinessExpenses'));
 const Transport = lazy(() => import('./pages/Transport'));
 const Login = lazy(() => import('./pages/Login'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const Inventory = lazy(() => import('./pages/Inventory'));
 const CarDetail = lazy(() => import('./pages/CarDetail'));
 const Payments = lazy(() => import('./pages/Payments'));
@@ -47,6 +48,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </Suspense>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { debtService } from '../services/debtService';
+import { exportSingleDebtToPDF } from '../utils/pdfExport';
 import { 
   Users, 
   UserPlus, 
@@ -273,6 +274,14 @@ const Debts = () => {
                               </td>
                            <td className="px-6 md:px-8 py-4 md:py-6 text-right">
                                <div className="flex flex-col sm:flex-row items-center justify-end gap-2 text-left">
+                                  {item.status === 'Settled' && (
+                                    <button 
+                                      onClick={() => exportSingleDebtToPDF(item)}
+                                      className="w-full sm:w-auto px-4 py-2 bg-white text-text-main border border-border-light rounded-md text-[9px] font-black uppercase tracking-widest hover:bg-neutral transition-all shadow-sm whitespace-nowrap"
+                                    >
+                                      Receipt
+                                    </button>
+                                  )}
                                   {item.paymentHistory?.length > 0 && (
                                      <button 
                                        onClick={() => { setHistoryData(item); setShowHistoryModal(true); }}

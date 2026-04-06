@@ -42,7 +42,7 @@ const Purchases = () => {
     date: new Date().toISOString().split('T')[0], 
     productId: '', 
     quantityPurchased: '', 
-    costPerBag: '' 
+    costPerKg: '' 
   });
   const [showDeactivateModal, setShowDeactivateModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
@@ -92,7 +92,7 @@ const Purchases = () => {
         date: new Date().toISOString().split('T')[0], 
         productId: '', 
         quantityPurchased: '', 
-        costPerBag: '' 
+        costPerKg: '' 
       });
     } catch (err) {
       toast.error('Failed to post transaction');
@@ -127,9 +127,9 @@ const Purchases = () => {
     }
   };
 
-  const todayCost = purchases.filter(p => new Date(p.date).toDateString() === new Date().toDateString()).reduce((acc, p) => acc + (p.quantityPurchased * p.costPerBag), 0);
-  const weekCost = purchases.reduce((acc, p) => acc + (p.quantityPurchased * p.costPerBag), 0);
-  const monthCost = purchases.reduce((acc, p) => acc + (p.quantityPurchased * p.costPerBag), 0);
+  const todayCost = purchases.filter(p => new Date(p.date).toDateString() === new Date().toDateString()).reduce((acc, p) => acc + ((p.qtyKg || 0) * (p.costPerKg || 0)), 0);
+  const weekCost = purchases.reduce((acc, p) => acc + ((p.qtyKg || 0) * (p.costPerKg || 0)), 0);
+  const monthCost = purchases.reduce((acc, p) => acc + ((p.qtyKg || 0) * (p.costPerKg || 0)), 0);
   const inventoryValue = weekCost; // Aligning with the statistical summary logic
 
   return (
@@ -272,8 +272,8 @@ const Purchases = () => {
                        <p className="text-[10px] text-text-muted font-bold mt-1 uppercase tracking-tighter">{p.quantityPurchased} Bags</p>
                     </td>
                     <td className="px-6 py-5 text-right">
-                      <p className="text-[15px] font-black text-text-main tabular-nums leading-none">₦{(p.quantityPurchased * p.costPerBag).toLocaleString()}</p>
-                      <p className="text-[10px] text-text-muted font-bold mt-1 uppercase tracking-tighter">Unit: ₦{p.costPerBag.toLocaleString()}</p>
+                      <p className="text-[15px] font-black text-text-main tabular-nums leading-none">₦{((p.qtyKg || 0) * (p.costPerKg || 0)).toLocaleString()}</p>
+                      <p className="text-[10px] text-text-muted font-bold mt-1 uppercase tracking-tighter">Unit: ₦{(p.costPerKg || 0).toLocaleString()}/Kg</p>
                     </td>
                     <td className="px-6 py-5 text-right">
                        <button onClick={() => handleView(p)} className="p-2 text-text-muted opacity-40 hover:opacity-100 hover:text-text-main transition-all">
@@ -391,7 +391,7 @@ const Purchases = () => {
                                  setNewPurchase({
                                    ...newPurchase, 
                                    productId: pId,
-                                   costPerBag: prod ? prod.costPrice : ''
+                                   costPerKg: prod ? prod.costPrice : ''
                                  });
                                }} 
                                className="input-pro !pl-10 !py-3.5 bg-neutral border-border-light appearance-none focus:bg-white transition-all outline-none" 
@@ -421,8 +421,8 @@ const Purchases = () => {
                            </div>
                          </div>
                          <div className="col-span-1">
-                           <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest">Cost/Bag (₦)</label>
-                           <input type="text" value={formatNumber(newPurchase.costPerBag)} onChange={(e) => setNewPurchase({...newPurchase, costPerBag: parseNumber(e.target.value)})} className="input-pro !py-3 bg-neutral border-border-light font-black" placeholder="0" required />
+                           <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest">Cost/KG (₦)</label>
+                           <input type="text" value={formatNumber(newPurchase.costPerKg)} onChange={(e) => setNewPurchase({...newPurchase, costPerKg: parseNumber(e.target.value)})} className="input-pro !py-3 bg-neutral border-border-light font-black" placeholder="0" required />
                          </div>
                       </div>
                    </div>
@@ -432,7 +432,12 @@ const Purchases = () => {
              <div className="p-6 md:p-8 border-t border-border-light bg-neutral/80 backdrop-blur-sm shrink-0 flex items-center justify-between gap-6 text-left">
                 <div className="hidden sm:block">
                    <p className="text-[9px] font-black text-text-muted uppercase tracking-[0.2em] mb-1">Total Transaction Value</p>
-                   <p className="text-3xl font-black text-text-main tracking-tighter leading-none">₦{(Number(newPurchase.quantityPurchased || 0) * Number(newPurchase.costPerBag || 0)).toLocaleString()}</p>
+                   {(() => {
+                      const prod = products.find(p => p._id === newPurchase.productId);
+                      const kg = Number(newPurchase.quantityPurchased || 0) * (prod ? prod.weightKg : 1);
+                      const total = kg * Number(newPurchase.costPerKg || 0);
+                      return <p className="text-3xl font-black text-text-main tracking-tighter leading-none">₦{total.toLocaleString()}</p>;
+                   })()}
                 </div>
                 <div className="flex gap-4 flex-1 sm:flex-none">
                    <Button variant="neutral" onClick={() => setShowModal(false)} className="flex-1 px-8 !py-4 font-black tracking-widest">Discard</Button>
@@ -499,8 +504,8 @@ const Purchases = () => {
                        <p className="text-2xl font-black text-primary tracking-tighter tabular-nums leading-none">{(selectedPurchase.qtyKg || 0).toLocaleString()} <span className="text-[10px] text-primary opacity-50 font-bold">KG</span></p>
                     </div>
                     <div>
-                       <label className="text-[9px] font-black text-text-muted uppercase tracking-widest mb-2 block">Unit Cost</label>
-                       <p className="text-2xl font-black text-text-main tracking-tighter tabular-nums leading-none">₦{selectedPurchase.costPerBag?.toLocaleString()}</p>
+                       <label className="text-[9px] font-black text-text-muted uppercase tracking-widest mb-2 block">Unit Cost (Per KG)</label>
+                       <p className="text-2xl font-black text-text-main tracking-tighter tabular-nums leading-none">₦{selectedPurchase.costPerKg?.toLocaleString()}</p>
                     </div>
                  </div>
 
@@ -508,7 +513,7 @@ const Purchases = () => {
                  <div className="pt-6 border-t border-border-light flex items-center justify-between">
                     <div>
                        <p className="text-[9px] font-black text-text-muted uppercase tracking-[0.2em] mb-1">Total Transaction Value</p>
-                       <p className="text-3xl font-black text-text-main tracking-tighter tabular-nums leading-none">₦{(selectedPurchase.quantityPurchased * selectedPurchase.costPerBag).toLocaleString()}</p>
+                       <p className="text-3xl font-black text-text-main tracking-tighter tabular-nums leading-none">₦{((selectedPurchase.qtyKg || 0) * (selectedPurchase.costPerKg || 0)).toLocaleString()}</p>
                     </div>
                     <div className="w-14 h-14 bg-primary/10 text-primary rounded-full flex items-center justify-center shadow-inner border border-primary/20">
                        <Receipt className="w-6 h-6" />

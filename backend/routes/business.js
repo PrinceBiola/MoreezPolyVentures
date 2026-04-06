@@ -100,13 +100,13 @@ router.delete('/:id', async (req, res) => {
 
 // Record a Purchase
 router.post('/purchases', async (req, res) => {
-  const { date, productId, quantityPurchased, costPerBag } = req.body;
+  const { date, productId, quantityPurchased, costPerKg } = req.body;
   try {
     const product = await Product.findById(productId);
     if (!product) return res.status(404).json({ message: 'Product not found' });
 
     const qtyKg = quantityPurchased * (product.weightKg || 1);
-    const purchase = new Purchase({ date, productId, quantityPurchased, qtyKg, costPerBag });
+    const purchase = new Purchase({ date, productId, quantityPurchased, qtyKg, costPerKg });
     
     // Update stock numerically
     const currentStock = Number(product.currentStock || 0);
@@ -184,7 +184,7 @@ router.post('/sales', async (req, res) => {
         salesPrice: Number(item.salesPrice)
       });
 
-      totalAmount += Number(item.quantitySold) * Number(item.salesPrice);
+      totalAmount += qtyKg * Number(item.salesPrice);
 
       // Update stock numerically
       const currentStock = Number(product.currentStock || 0);
@@ -259,7 +259,7 @@ router.get('/reports/summary', async (req, res) => {
     ]);
     const totalPurchases = await Purchase.aggregate([
       { $match: { status: 'Active' } },
-      { $group: { _id: null, total: { $sum: { $multiply: ['$quantityPurchased', '$costPerBag'] } } } }
+      { $group: { _id: null, total: { $sum: { $multiply: ['$qtyKg', '$costPerKg'] } } } }
     ]);
     res.json({
       sales: totalSales[0]?.total || 0,
