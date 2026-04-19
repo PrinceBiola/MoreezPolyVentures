@@ -37,8 +37,15 @@ const Sales = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [showModal, setShowModal] = useState(false);
+const getLocalDatetime = () => {
+    const now = new Date();
+    // Adjust to local timezone explicitly before slicing to maintain local hours
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    return now.toISOString().slice(0, 16);
+  };
+
   const [newSale, setNewSale] = useState({ 
-    date: new Date().toISOString().split('T')[0], 
+    date: getLocalDatetime(), 
     customerName: '', 
     items: [{ productId: '', quantitySold: '', salesPrice: '' }] 
   });
@@ -114,21 +121,40 @@ const Sales = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (newSale.items.some(item => !item.productId || !item.quantitySold || !item.salesPrice)) {
-      toast.error('Please fill all item details');
+    if (submitting) return; // Prevent double-click firing
+
+    if (!newSale.customerName.trim()) {
+      toast.error('Strategic Stop: Customer name is absolutely required.');
       return;
     }
+
+    if (newSale.items.some(item => !item.productId || Number(item.quantitySold) <= 0 || Number(item.salesPrice) <= 0)) {
+      toast.error('Strategic Stop: Invalid item data detected. Ensure no zero-values or missing products exist.');
+      return;
+    }
+
     setSubmitting(true);
     try {
-      await salesService.recordSale(newSale);
+      // Create a cloned payload ensuring numeric coercion
+      const safePayload = {
+        date: new Date(newSale.date).toISOString(), // Output guaranteed strict ISO
+        customerName: newSale.customerName.trim(),
+        items: newSale.items.map(i => ({
+          productId: i.productId,
+          quantitySold: Number(i.quantitySold),
+          salesPrice: Number(i.salesPrice)
+        }))
+      };
+
+      await salesService.recordSale(safePayload);
       toast.success('Batch finalized successfully');
       setShowModal(false);
       fetchData();
       setNewSale({ 
-        date: new Date().toISOString().split('T')[0], 
+        date: getLocalDatetime(), 
         customerName: '', 
         items: [{ productId: '', quantitySold: '', salesPrice: '' }] 
-  });
+      });
     } catch (err) {
       toast.error(err.response?.data?.message || 'Transaction failed');
     } finally {
@@ -147,7 +173,7 @@ const Sales = () => {
   };
 
   const handleConfirmDeactivate = async () => {
-    if (!saleToDeactivate) return;
+    if (!saleToDeactivate || submitting) return; // Double-click shield
     setSubmitting(true);
     try {
       await salesService.deleteSale(saleToDeactivate._id);
@@ -391,7 +417,7 @@ const Sales = () => {
                         <label className="text-[9px] font-black text-text-muted uppercase tracking-widest block text-left">Sale Date</label>
                         <div className="relative">
                            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted opacity-50 outline-none" />
-                           <input type="date" value={newSale.date} onChange={(e) => setNewSale({...newSale, date: e.target.value})} className="input-pro !pl-10 !py-3 bg-neutral/30 border-border-light focus:bg-white" required />
+                           <input type="datetime-local" value={newSale.date} onChange={(e) => setNewSale({...newSale, date: e.target.value})} className="input-pro !pl-10 !py-3 bg-neutral/30 border-border-light focus:bg-white" required />
                         </div>
                      </div>
                    </div>
@@ -481,7 +507,7 @@ const Sales = () => {
                    </div>
                    <div className="flex gap-4">
                       <Button variant="neutral" onClick={() => setShowModal(false)} className="flex-1 !py-4 font-black tracking-widest">Discard Batch</Button>
-                      <Button type="submit" loading={submitting} className="flex-2 !py-4 !bg-primary hover:!bg-accent shadow-xl shadow-primary/10 font-black tracking-widest uppercase">Submit Sale</Button>
+                      <Button type="submit" disabled={submitting} loading={submitting} className="flex-2 !py-4 !bg-primary hover:!bg-accent shadow-xl shadow-primary/10 font-black tracking-widest uppercase disabled:opacity-50 disabled:cursor-not-allowed">Submit Sale</Button>
                    </div>
                 </div>
              </form>

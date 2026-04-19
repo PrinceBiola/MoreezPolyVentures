@@ -38,8 +38,14 @@ const Purchases = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const getLocalDatetime = () => {
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    return now.toISOString().slice(0, 16);
+  };
+
   const [newPurchase, setNewPurchase] = useState({ 
-    date: new Date().toISOString().split('T')[0], 
+    date: getLocalDatetime(), 
     productId: '', 
     quantityPurchased: '', 
     costPerKg: '' 
@@ -82,14 +88,28 @@ const Purchases = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (submitting) return;
+
+    if (!newPurchase.productId || Number(newPurchase.quantityPurchased) <= 0 || Number(newPurchase.costPerKg) <= 0) {
+      toast.error('Strategic Stop: Asset, quantity, and cost must be properly defined.');
+      return;
+    }
+
     setSubmitting(true);
     try {
-      await businessService.recordPurchase(newPurchase);
+      const safePayload = {
+        date: new Date(newPurchase.date).toISOString(),
+        productId: newPurchase.productId,
+        quantityPurchased: Number(newPurchase.quantityPurchased),
+        costPerKg: Number(newPurchase.costPerKg)
+      };
+
+      await businessService.recordPurchase(safePayload);
       toast.success('Inflow recorded successfully');
       setShowModal(false);
       fetchData();
       setNewPurchase({ 
-        date: new Date().toISOString().split('T')[0], 
+        date: getLocalDatetime(), 
         productId: '', 
         quantityPurchased: '', 
         costPerKg: '' 
@@ -112,7 +132,7 @@ const Purchases = () => {
   };
 
   const handleConfirmDeactivate = async () => {
-    if (!purchaseToDeactivate) return;
+    if (!purchaseToDeactivate || submitting) return;
     setSubmitting(true);
     try {
       await businessService.deletePurchase(purchaseToDeactivate._id);
@@ -258,7 +278,7 @@ const Purchases = () => {
                   <tr key={p._id} className="hover:bg-neutral/30 transition-colors group">
                     <td className="px-6 py-5">
                       <p className="text-[13px] font-black text-text-main">{new Date(p.date).toLocaleDateString()}</p>
-                      <p className="text-[10px] text-text-muted font-bold mt-1">14:32 PM</p>
+                      <p className="text-[10px] text-text-muted font-bold mt-1">{new Date(p.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                     </td>
                     <td className="px-6 py-5">
                       <p className="text-[11px] font-black text-primary/70 hover:text-primary cursor-pointer uppercase tracking-tight transition-colors">SHP-{p._id.slice(-5).toUpperCase()}</p>
@@ -361,7 +381,7 @@ const Purchases = () => {
                          <div className="col-span-1">
                            <label className="text-[9px] font-black text-text-muted uppercase mb-2 block tracking-widest">Arrival Date</label>
                            <div className="relative">
-                              <input type="date" value={newPurchase.date} onChange={(e) => setNewPurchase({...newPurchase, date: e.target.value})} className="input-pro !py-3 bg-neutral border-border-light text-text-main font-black" required />
+                              <input type="datetime-local" value={newPurchase.date} onChange={(e) => setNewPurchase({...newPurchase, date: e.target.value})} className="input-pro !py-3 bg-neutral border-border-light text-text-main font-black" required />
                            </div>
                          </div>
                          <div className="col-span-1">
@@ -441,7 +461,7 @@ const Purchases = () => {
                 </div>
                 <div className="flex gap-4 flex-1 sm:flex-none">
                    <Button variant="neutral" onClick={() => setShowModal(false)} className="flex-1 px-8 !py-4 font-black tracking-widest">Discard</Button>
-                   <Button type="submit" loading={submitting} className="flex-2 !bg-primary hover:!bg-accent !py-4 px-10 shadow-xl shadow-primary/10 font-black tracking-widest uppercase">Validate Entry</Button>
+                   <Button type="submit" disabled={submitting} loading={submitting} className="flex-2 !bg-primary hover:!bg-accent !py-4 px-10 shadow-xl shadow-primary/10 font-black tracking-widest uppercase disabled:opacity-50 disabled:cursor-not-allowed">Validate Entry</Button>
                 </div>
              </div>
           </form>
